@@ -1,7 +1,8 @@
 all: build lint test
 
 build:
-	go build -o github-actions ./cmd
+	@$(call mkdir,bin)
+	go build -o bin/github-actions ./cmd
 
 lint:
 	golangci-lint run --config golangci.yml ./...

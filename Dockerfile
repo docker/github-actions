@@ -17,8 +17,13 @@ RUN make ${MAKE_TARGET}
 
 
 
+FROM scratch AS cli
+COPY --from=builder /src/bin/github-actions github-actions
+
+
+
 FROM alpine:${ALPINE_VERSION}
 
-COPY --from=builder /src/github-actions /github-actions
+COPY --from=builder /src/bin/github-actions /github-actions
 
 ENTRYPOINT ["/github-actions"]
