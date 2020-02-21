@@ -44,8 +44,6 @@ func parseGitRef(ref string) GitReference {
 type GitHub struct {
 	RunInActions bool   `env:"GITHUB_ACTIONS"`
 	Workflow     string `env:"GITHUB_WORKFLOW"`
-	RunID        string `env:"GITHUB_RUN_ID"`
-	RunNumber    string `env:"GITHUB_RUN_NUMBER"`
 	Action       string `env:"GITHUB_ACTION"`
 	Actor        string `env:"GITHUB_ACTOR"`
 	Repository   string `env:"GITHUB_REPOSITORY"`

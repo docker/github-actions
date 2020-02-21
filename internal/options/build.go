@@ -92,9 +92,5 @@ func GetLabels(build Build, github GitHub) []string {
 		labels = append(labels, fmt.Sprintf("%s-sha=%s", githubLabelPrefix, github.Sha))
 	}
 
-	if github.RunID != "" && github.RunNumber != "" {
-		labels = append(labels, fmt.Sprintf("%s-run=%s-%s", githubLabelPrefix, github.RunID, github.RunNumber))
-	}
-
 	return labels
 }

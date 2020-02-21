@@ -10,8 +10,6 @@ import (
 func TestGetGitHubOptions(t *testing.T) {
 	_ = os.Setenv("GITHUB_ACTIONS", "true")
 	_ = os.Setenv("GITHUB_WORKFLOW", "workflow")
-	_ = os.Setenv("GITHUB_RUN_ID", "run-id")
-	_ = os.Setenv("GITHUB_RUN_NUMBER", "run-number")
 	_ = os.Setenv("GITHUB_ACTION", "action")
 	_ = os.Setenv("GITHUB_ACTOR", "actor")
 	_ = os.Setenv("GITHUB_REPOSITORY", "repository")
@@ -24,8 +22,6 @@ func TestGetGitHubOptions(t *testing.T) {
 	assert.DeepEqual(t, GitHub{
 		RunInActions: true,
 		Workflow:     "workflow",
-		RunID:        "run-id",
-		RunNumber:    "run-number",
 		Action:       "action",
 		Actor:        "actor",
 		Repository:   "repository",

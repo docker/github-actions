@@ -120,17 +120,14 @@ func TestGetLabels(t *testing.T) {
 			labels:     []string{"label1", "label2"},
 			setDefault: true,
 			github: GitHub{
-				Actor:     "actor",
-				Sha:       "sha",
-				RunID:     "1",
-				RunNumber: "2",
+				Actor: "actor",
+				Sha:   "sha",
 			},
 			expected: []string{
 				"label1",
 				"label2",
 				"com.docker.github-actions-actor=actor",
 				"com.docker.github-actions-sha=sha",
-				"com.docker.github-actions-run=1-2",
 			},
 		},
 	}

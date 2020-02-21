@@ -12,5 +12,8 @@ jobs:
     - name: Print env
       run: env
 
+    - name: Read event json
+      run: cat $GITHUB_EVENT_PATH
+
     - name: Build
       run: make -f docker.Makefile
