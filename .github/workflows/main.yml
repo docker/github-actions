@@ -9,5 +9,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Print env
+      run: env
+
     - name: Build
       run: make -f docker.Makefile

@@ -17,20 +17,66 @@ func TestGetGitHubOptions(t *testing.T) {
 	_ = os.Setenv("GITHUB_REPOSITORY", "repository")
 	_ = os.Setenv("GITHUB_EVENT_NAME", "event-name")
 	_ = os.Setenv("GITHUB_SHA", "sha")
-	_ = os.Setenv("GITHUB_REF", "ref")
+	_ = os.Setenv("GITHUB_REF", "refs/heads/master")
 
 	github, err := GetGitHubOptions()
 	assert.NilError(t, err)
-	assert.Equal(t, true, github.RunInActions)
-	assert.Equal(t, "workflow", github.Workflow)
-	assert.Equal(t, "run-id", github.RunID)
-	assert.Equal(t, "run-number", github.RunNumber)
-	assert.Equal(t, "action", github.Action)
-	assert.Equal(t, "actor", github.Actor)
-	assert.Equal(t, "repository", github.Repository)
-	assert.Equal(t, "event-name", github.EventName)
-	assert.Equal(t, "sha", github.Sha)
-	assert.Equal(t, "ref", github.Ref)
+	assert.DeepEqual(t, GitHub{
+		RunInActions: true,
+		Workflow:     "workflow",
+		RunID:        "run-id",
+		RunNumber:    "run-number",
+		Action:       "action",
+		Actor:        "actor",
+		Repository:   "repository",
+		EventName:    "event-name",
+		Sha:          "sha",
+		Reference: GitReference{
+			Type: GitRefHead,
+			Name: "master",
+		},
+	}, github)
+}
+
+func TestParseGitRef(t *testing.T) {
+	testCases := []struct {
+		name         string
+		ref          string
+		expectedType GitReferenceType
+		expectedName string
+	}{
+		{
+			name:         "master-branch",
+			ref:          "refs/heads/master",
+			expectedType: GitRefHead,
+			expectedName: "master",
+		},
+		{
+			name:         "different-branch",
+			ref:          "refs/heads/different",
+			expectedType: GitRefHead,
+			expectedName: "different",
+		},
+		{
+			name:         "pull-request",
+			ref:          "refs/pulls/pr1",
+			expectedType: GitRefPullRequest,
+			expectedName: "pr1",
+		},
+		{
+			name:         "tag",
+			ref:          "refs/tags/tag1",
+			expectedType: GitRefTag,
+			expectedName: "tag1",
+		},
+	}
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			ref := parseGitRef(tc.ref)
+			assert.DeepEqual(t, GitReference{Type: tc.expectedType, Name: tc.expectedName}, ref)
+		})
+	}
 }
 
 func TestGetGitHubOptionsNotInActions(t *testing.T) {
