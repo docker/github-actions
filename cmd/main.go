@@ -29,6 +29,13 @@ func main() {
 					return login(cmd)
 				},
 			},
+			{
+				Name:        "build",
+				Description: "Builds a docker image",
+				Action: func(c *commandLine.Context) error {
+					return build(cmd)
+				},
+			},
 		},
 	}
 
