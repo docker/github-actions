@@ -2,6 +2,7 @@ package e2e
 
 import (
 	"bufio"
+	"encoding/json"
 	"os"
 	"os/exec"
 	"path"
@@ -34,7 +35,7 @@ func parseEnvFile(envFile string) ([]envVar, error) {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		split := strings.Split(scanner.Text(), "=")
+		split := strings.SplitN(scanner.Text(), "=", 2)
 		vars = append(vars, envVar{split[0], split[1]})
 	}
 
@@ -105,4 +106,25 @@ func getActionsBinaryPath() (string, error) {
 	}
 
 	return path.Join(wd, "../bin/github-actions"), nil
+}
+
+func inspectImage(image string) (inspectResult, error) {
+	out, err := exec.Command("docker", "inspect", image).Output()
+	if err != nil {
+		return inspectResult{}, err
+	}
+	var result []inspectResult
+	if err = json.Unmarshal(out, &result); err != nil {
+		return inspectResult{}, err
+	}
+	return result[0], nil
+}
+
+type inspectResult struct {
+	RepoTags []string            `json:"RepoTags"`
+	Config   inspectResultConfig `json:"Config"`
+}
+
+type inspectResultConfig struct {
+	Labels map[string]string `json:"Labels"`
 }
