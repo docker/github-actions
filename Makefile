@@ -12,7 +12,8 @@ lint:
 test: test-unit test-e2e
 
 test-unit:
-	go test $(go list ./... | grep -v /e2e)
+	go test ./cmd/... ./internal/...
 
 test-e2e: build
+	docker build --file ./e2e/Dockerfile.registry -t github-actions-registry ./e2e
 	go test ./e2e/...

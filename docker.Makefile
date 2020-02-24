@@ -1,11 +1,10 @@
 TAG ?= latest
-STATIC_FLAGS = BUILDKIT_PROGRESS=plain
-DOCKER_BUILD = $(STATIC_FLAGS) docker build
+DOCKER_BUILD = docker build --progress=plain
 
-ROOT_DIR = $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+ROOT_DIR = $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+ROOT_DIR := $(subst .\,,$(ROOT_DIR))
 
-all:
-	$(DOCKER_BUILD) -t docker/github-actions:$(TAG) .
+all: image lint test
 
 image:
 	$(DOCKER_BUILD) -t docker/github-actions:$(TAG) --build-arg MAKE_TARGET=build .
@@ -24,4 +23,4 @@ test-unit:
 
 test-e2e:
 	$(DOCKER_BUILD) -t github-actions-test-e2e --target e2e --build-arg MAKE_TARGET=build .
-	docker run --rm --network="host" -e "E2E_HOST_PATH=$(ROOT_DIR)/e2e" -v /var/run/docker.sock:/var/run/docker.sock github-actions-test-e2e make test-e2e
+	docker run --rm --network="host" -v /var/run/docker.sock:/var/run/docker.sock github-actions-test-e2e make test-e2e

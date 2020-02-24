@@ -2,7 +2,6 @@ package e2e
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"os/exec"
 	"path"
@@ -12,7 +11,6 @@ import (
 const (
 	registryContainerName = "github-actions-registry"
 	githubActionsImage    = "github-actions-e2e"
-	e2eHostPath           = "E2E_HOST_PATH"
 )
 
 type envVar struct {
@@ -61,26 +59,10 @@ func removeEnvVars(vars []envVar) error {
 	return nil
 }
 
-func getE2eHostPath() (string, error) {
-	path := os.Getenv(e2eHostPath)
-	if path != "" {
-		return path, nil
-	}
-
-	return os.Getwd()
-}
-
 func setupLocalRegistry() error {
 	_ = removeLocalRegistry()
 
-	path, err := getE2eHostPath()
-	if err != nil {
-		return err
-	}
-
-	authMount := fmt.Sprintf("%s/testdata/auth:/auth", path)
-	fmt.Printf("authMount = %s\n", authMount)
-	cmd := exec.Command("docker", "run", "-d", "-p", "5000:5000", "--name", registryContainerName, "-v", authMount, "-e", "REGISTRY_AUTH=htpasswd", "-e", "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm", "-e", "REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd", "registry:2")
+	cmd := exec.Command("docker", "run", "-d", "-p", "5000:5000", "--name", registryContainerName, registryContainerName)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
