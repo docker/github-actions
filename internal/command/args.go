@@ -1,8 +1,6 @@
 package command
 
 import (
-	"fmt"
-
 	"github.com/docker/github-actions/internal/options"
 )
 
@@ -16,15 +14,11 @@ func LoginArgs(o options.Login) []string {
 }
 
 // BuildArgs converts build options into the cli arguments used to call `docker build`
-func BuildArgs(o options.Build, github options.GitHub) []string {
+func BuildArgs(o options.Build, github options.GitHub, tags []string) []string {
 	args := []string{"build"}
 
-	for _, tag := range options.GetTags(o, github) {
-		t := fmt.Sprintf("%s:%s", o.Repository, tag)
-		if o.Server != "" {
-			t = fmt.Sprintf("%s/%s", o.Server, t)
-		}
-		args = append(args, "-t", t)
+	for _, tag := range tags {
+		args = append(args, "-t", tag)
 	}
 
 	for _, label := range options.GetLabels(o, github) {

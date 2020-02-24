@@ -28,6 +28,7 @@ func TestBuildArgs(t *testing.T) {
 		name     string
 		build    options.Build
 		github   options.GitHub
+		tags     []string
 		expected []string
 	}{
 		{
@@ -45,36 +46,9 @@ func TestBuildArgs(t *testing.T) {
 			expected: []string{"build", "--file", "dockerfile", "."},
 		},
 		{
-			name: "with-static-tags",
-			build: options.Build{
-				Repository: "repository",
-				Tags:       []string{"tag1", "tag2"},
-			},
-			expected: []string{"build", "-t", "repository:tag1", "-t", "repository:tag2", "."},
-		},
-		{
-			name: "with-static-tags-and-server",
-			build: options.Build{
-				Server:     "server",
-				Repository: "repository",
-				Tags:       []string{"tag1", "tag2"},
-			},
-			expected: []string{"build", "-t", "server/repository:tag1", "-t", "server/repository:tag2", "."},
-		},
-		{
-			name: "with-default-tags",
-			build: options.Build{
-				SetDefaultTags: true,
-				Repository:     "repository",
-				Tags:           []string{"tag1"},
-			},
-			github: options.GitHub{
-				Reference: options.GitReference{
-					Type: options.GitRefHead,
-					Name: "branch",
-				},
-			},
-			expected: []string{"build", "-t", "repository:tag1", "-t", "repository:branch", "."},
+			name:     "with-tags",
+			tags:     []string{"tag1", "tag2"},
+			expected: []string{"build", "-t", "tag1", "-t", "tag2", "."},
 		},
 		{
 			name: "with-static-labels",
@@ -120,7 +94,7 @@ func TestBuildArgs(t *testing.T) {
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
-			args := BuildArgs(tc.build, tc.github)
+			args := BuildArgs(tc.build, tc.github, tc.tags)
 			assert.DeepEqual(t, tc.expected, args)
 		})
 	}
