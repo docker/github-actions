@@ -17,3 +17,6 @@ jobs:
 
     - name: Build
       run: make -f docker.Makefile
+
+    - name: E2E
+      run: make -f docker.Makefile test-e2e

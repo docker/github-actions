@@ -1,4 +1,6 @@
-all: build lint test
+default: build lint test-unit
+
+all: default test-e2e
 
 build:
 	@$(call mkdir,bin)
@@ -7,5 +9,10 @@ build:
 lint:
 	golangci-lint run --config golangci.yml ./...
 
-test:
-	go test ./...
+test: test-unit test-e2e
+
+test-unit:
+	go test $(go list ./... | grep -v /e2e)
+
+test-e2e: build
+	go test ./e2e/...
