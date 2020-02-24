@@ -13,12 +13,11 @@ func TestLoginArgs(t *testing.T) {
 		Username: "username",
 		Password: "password",
 	}
-	args := LoginArgs(o)
+	args := LoginArgs(o, "")
 
 	assert.DeepEqual(t, expected, args)
 
-	o.Server = "server"
-	args = LoginArgs(o)
+	args = LoginArgs(o, "server")
 	expected = append(expected, "server")
 	assert.DeepEqual(t, expected, args)
 }

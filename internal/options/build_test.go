@@ -10,7 +10,6 @@ import (
 func TestGetBuildOptions(t *testing.T) {
 	_ = os.Setenv("INPUT_PATH", "path")
 	_ = os.Setenv("INPUT_DOCKERFILE", "dockerfile")
-	_ = os.Setenv("INPUT_SERVER", "server")
 	_ = os.Setenv("INPUT_REPOSITORY", "repository")
 	_ = os.Setenv("INPUT_BUILD_ARGS", "buildarg1=b1,buildarg2=b2")
 	_ = os.Setenv("INPUT_LABELS", "label1=l1,label2=l2")
@@ -26,7 +25,6 @@ func TestGetBuildOptions(t *testing.T) {
 	assert.DeepEqual(t, Build{
 		Path:             "path",
 		Dockerfile:       "dockerfile",
-		Server:           "server",
 		SetDefaultLabels: false,
 		Target:           "target",
 		AlwaysPull:       true,

@@ -14,7 +14,6 @@ const githubLabelPrefix = "com.docker.github-actions"
 type Build struct {
 	Path             string `env:"INPUT_PATH"`
 	Dockerfile       string `env:"INPUT_DOCKERFILE"`
-	Server           string `env:"INPUT_SERVER"`
 	SetDefaultLabels bool   `env:"INPUT_SET_DEFAULT_LABELS"`
 	Target           string `env:"INPUT_TARGET"`
 	AlwaysPull       bool   `env:"INPUT_ALWAYS_PULL"`

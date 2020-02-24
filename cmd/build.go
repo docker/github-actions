@@ -16,7 +16,7 @@ func build(cmd command.Runner) error {
 		return err
 	}
 
-	tags := options.GetTags(o.Server, github)
+	tags := options.GetTags(options.GetServer(), github)
 
 	args := command.BuildArgs(o, github, tags)
 	return cmd.Run("docker", args...)

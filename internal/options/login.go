@@ -6,7 +6,6 @@ import "github.com/caarlos0/env/v6"
 type Login struct {
 	Username string `env:"INPUT_USERNAME"`
 	Password string `env:"INPUT_PASSWORD"`
-	Server   string `env:"INPUT_SERVER"`
 }
 
 // GetLoginOptions gets the login action environment variables
