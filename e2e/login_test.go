@@ -2,8 +2,10 @@ package e2e
 
 import (
 	"testing"
+	"time"
 
 	"gotest.tools/v3/assert"
+	"k8s.io/apimachinery/pkg/util/wait"
 )
 
 func TestLogin(t *testing.T) {
@@ -11,6 +13,13 @@ func TestLogin(t *testing.T) {
 	assert.NilError(t, err)
 	defer removeLocalRegistry()
 
-	err = runActionsCommand("login", "testdata/login_test.env")
+	err = loginLocalRegistry()
 	assert.NilError(t, err)
+}
+
+func loginLocalRegistry() error {
+	return wait.Poll(2*time.Second, 30*time.Second, func() (bool, error) {
+		err := runActionsCommand("login", "testdata/login_test.env")
+		return err == nil, err
+	})
 }
