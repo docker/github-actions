@@ -35,9 +35,14 @@ func TestBuildArgs(t *testing.T) {
 			expected: []string{"build", "."},
 		},
 		{
+			name:     "with-path",
+			build:    options.Build{Path: "path"},
+			expected: []string{"build", "path"},
+		},
+		{
 			name:     "with-dockerfile",
 			build:    options.Build{Dockerfile: "dockerfile"},
-			expected: []string{"build", "dockerfile"},
+			expected: []string{"build", "--file", "dockerfile", "."},
 		},
 		{
 			name: "with-static-tags",

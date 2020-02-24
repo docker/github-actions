@@ -31,6 +31,10 @@ func BuildArgs(o options.Build, github options.GitHub) []string {
 		args = append(args, "--label", label)
 	}
 
+	if o.Dockerfile != "" {
+		args = append(args, "--file", o.Dockerfile)
+	}
+
 	if o.Target != "" {
 		args = append(args, "--target", o.Target)
 	}
@@ -43,10 +47,10 @@ func BuildArgs(o options.Build, github options.GitHub) []string {
 		args = append(args, "--build-arg", buildArg)
 	}
 
-	if o.Dockerfile == "" {
+	if o.Path == "" {
 		args = append(args, ".")
 	} else {
-		args = append(args, o.Dockerfile)
+		args = append(args, o.Path)
 	}
 	return args
 }

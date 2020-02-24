@@ -12,6 +12,7 @@ const githubLabelPrefix = "com.docker.github-actions"
 
 // Build contains the parsed build action environment variables
 type Build struct {
+	Path             string `env:"INPUT_PATH"`
 	Dockerfile       string `env:"INPUT_DOCKERFILE"`
 	Server           string `env:"INPUT_SERVER"`
 	Repository       string `env:"INPUT_REPOSITORY"`

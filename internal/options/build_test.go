@@ -8,6 +8,7 @@ import (
 )
 
 func TestGetBuildOptions(t *testing.T) {
+	_ = os.Setenv("INPUT_PATH", "path")
 	_ = os.Setenv("INPUT_DOCKERFILE", "dockerfile")
 	_ = os.Setenv("INPUT_SERVER", "server")
 	_ = os.Setenv("INPUT_REPOSITORY", "repository")
@@ -23,6 +24,7 @@ func TestGetBuildOptions(t *testing.T) {
 
 	assert.NilError(t, err)
 	assert.DeepEqual(t, Build{
+		Path:             "path",
 		Dockerfile:       "dockerfile",
 		Server:           "server",
 		Repository:       "repository",
