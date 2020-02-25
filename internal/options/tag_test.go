@@ -16,6 +16,7 @@ func TestGetTags(t *testing.T) {
 		ref      GitReference
 		server   string
 		expected []string
+		sha      string
 	}{
 		{
 			name:     "no-auto",
@@ -65,6 +66,30 @@ func TestGetTags(t *testing.T) {
 			expected: []string{"my/repo:tag1", "my/repo:tag2", "my/repo:v1.0"},
 			ref:      GitReference{GitRefTag, "v1.0"},
 		},
+		{
+			name:     "master-branch-with-sha",
+			autoTag:  true,
+			tags:     "tag1,tag2",
+			expected: []string{"my/repo:tag1", "my/repo:tag2", "my/repo:latest", "my/repo:sha-1234567"},
+			ref:      GitReference{GitRefHead, "master"},
+			sha:      "1234567890",
+		},
+		{
+			name:     "pull-request-with-sha",
+			autoTag:  true,
+			tags:     "tag1,tag2",
+			expected: []string{"my/repo:tag1", "my/repo:tag2", "my/repo:pr-name", "my/repo:sha-1234567"},
+			ref:      GitReference{GitRefPullRequest, "name"},
+			sha:      "1234567890",
+		},
+		{
+			name:     "tag-with-sha",
+			autoTag:  true,
+			tags:     "tag1,tag2",
+			expected: []string{"my/repo:tag1", "my/repo:tag2", "my/repo:v1.0"},
+			ref:      GitReference{GitRefTag, "v1.0"},
+			sha:      "1234567890",
+		},
 	}
 
 	for _, tc := range testCases {
@@ -79,7 +104,7 @@ func TestGetTags(t *testing.T) {
 
 			tags := GetTags(
 				tc.server,
-				GitHub{Reference: tc.ref},
+				GitHub{Reference: tc.ref, Sha: tc.sha},
 			)
 			assert.DeepEqual(t, tc.expected, tags)
 		})

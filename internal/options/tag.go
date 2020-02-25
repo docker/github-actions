@@ -26,6 +26,7 @@ func staticTags() []string {
 
 func toFullTag(server, repo, tag string) string {
 	tag = strings.Trim(tag, " ")
+	tag = strings.ReplaceAll(tag, "/", "-")
 	if server != "" {
 		return fmt.Sprintf("%s/%s:%s", server, repo, tag)
 	}
@@ -47,11 +48,21 @@ func GetTags(server string, github GitHub) []string {
 			} else {
 				tags = append(tags, toFullTag(server, repo, github.Reference.Name))
 			}
+			tags = appendShortGitShaTag(tags, github, server, repo)
 		case GitRefPullRequest:
 			tags = append(tags, toFullTag(server, repo, fmt.Sprintf("pr-%s", github.Reference.Name)))
+			tags = appendShortGitShaTag(tags, github, server, repo)
 		case GitRefTag:
 			tags = append(tags, toFullTag(server, repo, github.Reference.Name))
 		}
+	}
+	return tags
+}
+
+func appendShortGitShaTag(tags []string, github GitHub, server, repo string) []string {
+	if len(github.Sha) >= 7 {
+		tag := fmt.Sprintf("sha-%s", github.Sha[0:7])
+		return append(tags, toFullTag(server, repo, tag))
 	}
 	return tags
 }
