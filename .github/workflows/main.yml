@@ -16,7 +16,7 @@ jobs:
       run: cat $GITHUB_EVENT_PATH
 
     - name: Build
-      run: make -f docker.Makefile build
+      run: DOCKER_BUILDKIT=1 make -f docker.Makefile build
 
     - name: E2E
-      run: make -f docker.Makefile test-e2e
+      run: DOCKER_BUILDKIT=1 make -f docker.Makefile test-e2e
