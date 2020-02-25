@@ -7,7 +7,7 @@ import (
 	"gotest.tools/v3/assert"
 )
 
-func TestBuildWithStaticTags(t *testing.T) {
+func TestBuild(t *testing.T) {
 	testCases := []struct {
 		name           string
 		envFile        string

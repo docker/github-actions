@@ -98,3 +98,9 @@ func TestBuildArgs(t *testing.T) {
 		})
 	}
 }
+
+func TestPushArgs(t *testing.T) {
+	tags := []string{"tag1", "tag2"}
+	args := PushArgs(tags)
+	assert.DeepEqual(t, []string{"push", "tag1", "tag2"}, args)
+}
