@@ -50,6 +50,6 @@ func BuildArgs(o options.Build, github options.GitHub, tags []string) []string {
 }
 
 // PushArgs converts tags into the cli arguments used to call `docker push`
-func PushArgs(tags []string) []string {
-	return append([]string{"push"}, tags...)
+func PushArgs(tag string) []string {
+	return []string{"push", tag}
 }

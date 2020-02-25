@@ -4,7 +4,7 @@ DOCKER_BUILD = docker build --progress=plain
 ROOT_DIR = $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 ROOT_DIR := $(subst .\,,$(ROOT_DIR))
 
-all: image lint test
+all: build test-unit
 
 build:
 	$(DOCKER_BUILD) -t docker/github-actions-default --build-arg MAKE_TARGET=default .

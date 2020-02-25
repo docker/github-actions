@@ -11,6 +11,15 @@ func push(cmd command.Runner) error {
 		return err
 	}
 	tags := options.GetTags(options.GetServer(), github)
-	args := command.PushArgs(tags)
-	return cmd.Run("docker", args...)
+	return runPush(cmd, tags)
+}
+
+func runPush(cmd command.Runner, tags []string) error {
+	for _, tag := range tags {
+		args := command.PushArgs(tag)
+		if err := cmd.Run("docker", args...); err != nil {
+			return err
+		}
+	}
+	return nil
 }
