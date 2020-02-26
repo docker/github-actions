@@ -19,7 +19,7 @@ func buildPush(cmd command.Runner) error {
 		return err
 	}
 	if login.Username != "" && login.Password != "" {
-		if err = runLogin(cmd, login, server); err != nil {
+		if err = command.RunLogin(cmd, login, server); err != nil {
 			return err
 		}
 	}
@@ -28,9 +28,9 @@ func buildPush(cmd command.Runner) error {
 	if err != nil {
 		return err
 	}
-	if err = runBuild(cmd, build, github, tags); err != nil {
+	if err = command.RunBuild(cmd, build, github, tags); err != nil {
 		return err
 	}
 
-	return runPush(cmd, tags)
+	return command.RunPush(cmd, tags)
 }

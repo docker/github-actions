@@ -11,10 +11,5 @@ func login(cmd command.Runner) error {
 		return err
 	}
 
-	return runLogin(cmd, o, options.GetServer())
-}
-
-func runLogin(cmd command.Runner, opt options.Login, server string) error {
-	args := command.LoginArgs(opt, server)
-	return cmd.Run("docker", args...)
+	return command.RunLogin(cmd, o, options.GetServer())
 }
