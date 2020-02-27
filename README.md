@@ -39,11 +39,24 @@ See the tagging section for information on tag inputs
 
 ### push
 
-Pushs a docker image.
+Pushes a docker image.
 
 #### inputs
 
 See the tagging section for information on tag inputs
+
+
+### build-push
+
+Builds, logs in, and pushes a docker image.
+
+#### inputs
+
+Same as the login and build commands with the addition of
+
+|Environment Variable|Required|Description|
+|---|---|---|
+|INPUT_PUSH|no|Will push the image if true|
 
 
 ## Tagging

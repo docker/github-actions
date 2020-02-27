@@ -14,22 +14,24 @@ func buildPush(cmd command.Runner) error {
 	server := options.GetServer()
 	tags := options.GetTags(server, github)
 
-	login, err := options.GetLoginOptions()
-	if err != nil {
-		return err
-	}
-	if login.Username != "" && login.Password != "" {
-		if err = command.RunLogin(cmd, login, server); err != nil {
-			return err
-		}
-	}
-
 	build, err := options.GetBuildOptions()
 	if err != nil {
 		return err
 	}
 	if err = command.RunBuild(cmd, build, github, tags); err != nil {
 		return err
+	}
+
+	if options.ShouldPush() {
+		login, err := options.GetLoginOptions()
+		if err != nil {
+			return err
+		}
+		if login.Username != "" && login.Password != "" {
+			if err = command.RunLogin(cmd, login, server); err != nil {
+				return err
+			}
+		}
 	}
 
 	return command.RunPush(cmd, tags)
