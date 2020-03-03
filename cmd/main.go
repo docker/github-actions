@@ -6,7 +6,7 @@ import (
 
 	"github.com/docker/github-actions/internal/command"
 	"github.com/docker/github-actions/internal/options"
-	commandLine "github.com/urfave/cli/v2"
+	"github.com/spf13/cobra"
 )
 
 func main() {
@@ -16,44 +16,44 @@ func main() {
 		os.Exit(1)
 	}
 
-	cmd := command.NewRunner()
+	runner := command.NewRunner()
 
-	app := &commandLine.App{
-		Name:  "docker github actions",
-		Usage: "Used in GitHub Actions to run Docker workflows",
-		Commands: []*commandLine.Command{
-			{
-				Name:        "login",
-				Description: "Logs into a docker server",
-				Action: func(c *commandLine.Context) error {
-					return login(cmd)
-				},
-			},
-			{
-				Name:        "build",
-				Description: "Builds a docker image",
-				Action: func(c *commandLine.Context) error {
-					return build(cmd)
-				},
-			},
-			{
-				Name:        "push",
-				Description: "Pushes a docker image",
-				Action: func(c *commandLine.Context) error {
-					return push(cmd)
-				},
-			},
-			{
-				Name:        "build-push",
-				Description: "Builds and pushes a docker image to a registry, logging in if necessary",
-				Action: func(c *commandLine.Context) error {
-					return buildPush(cmd)
-				},
+	rootCmd := &cobra.Command{
+		Use:   "github-actions",
+		Short: "Used in GitHub Actions to run Docker workflows",
+	}
+	rootCmd.AddCommand(
+		&cobra.Command{
+			Use:   "login",
+			Short: "Logs into a docker server",
+			RunE: func(cmd *cobra.Command, args []string) error {
+				return login(runner)
 			},
 		},
-	}
+		&cobra.Command{
+			Use:   "build",
+			Short: "Builds a docker image",
+			RunE: func(cmd *cobra.Command, args []string) error {
+				return build(runner)
+			},
+		},
+		&cobra.Command{
+			Use:   "push",
+			Short: "Pushes a docker image",
+			RunE: func(cmd *cobra.Command, args []string) error {
+				return push(runner)
+			},
+		},
+		&cobra.Command{
+			Use:   "build-push",
+			Short: "Builds and pushes a docker image to a registry, logging in if necessary",
+			RunE: func(cmd *cobra.Command, args []string) error {
+				return buildPush(runner)
+			},
+		},
+	)
 
-	if err = app.Run(os.Args); err != nil {
+	if err = rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
