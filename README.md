@@ -27,9 +27,9 @@ Builds and tags a docker image.
 
 |Environment Variable|Required|Description|
 |---|---|---|
-|INPUT_PATH|no|Path to build from. Defaults to `.`|
-|INPUT_DOCKERFILE|no|Path to Dockerfile. Defaults to `./Dockerfile`|
-|INPUT_SET_DEFAULT_LABELS|no|Adds default labels (see below)|
+|INPUT_PATH|yes|Path to build from|
+|INPUT_DOCKERFILE|no|Path to Dockerfile|
+|INPUT_ADD_GIT_LABELS|no|Adds git labels (see below)|
 |INPUT_TARGET|no|Target of chain Dockerfile to build|
 |INPUT_BUILD_ARGS|no|Comma-delimited list of build-args|
 |INPUT_LABELS|no|Comma-delimited list of labels|
@@ -70,18 +70,19 @@ There are 4 input variables used for tagging
 |INPUT_SERVER|no|Server to tag with|
 |INPUT_REPOSITORY|yes|Repository to tag with|
 |INPUT_TAGS|no|Hard coded comma-delimited list of tags|
-|INPUT_AUTO_TAG|no|If true then `github-actions` will add tags automatically as described below|
+|INPUT_TAG_WITH_REF|no|If true then `github-actions` will add tags depending on the git ref automatically as described below|
+|INPUT_TAG_WITH_SHA|no|If true then `github-actions` will add a tag in the form `sha-{git-short-sha}`|
 
 If `INPUT_SERVER` is set then all tags are prefixed with `{INPUT_SERVER}/{INPUT_REPOSITORY}:`.
 If not then all tags are prefixed with `{INPUT_REPOSITORY}:`
 
-Auto tags depend on the git reference that the run is associated with. The reference is passed to `github-actions` using the default `GITHUB_REF` enviroment variable.
+Auto tags depend on the git reference that the run is associated with. The reference is passed to `github-actions` using the GitHub actions `GITHUB_REF` enviroment variable.
 
-If the reference is `refs/heads/{branch-name}` then 2 tags are added: `{branch-name}` and `{git-short-sha}`. For the master branch the `{branch-name}` is replaced with `latest`.
+If the reference is `refs/heads/{branch-name}` then the tag `{branch-name}` is added. For the master branch the `{branch-name}` is replaced with `latest`.
 
-If the reference is `refs/pull-requests/{pr}` then 2 tags are added: `pr-{pr}` and `{git-short-sha}`.
+If the reference is `refs/pull-requests/{pr}` then the tag `pr-{pr}` is added.
 
-If the reference is `refs/tags/{tag-name}` then 1 tag is added: `{tag-name}`.
+If the reference is `refs/tags/{tag-name}` then the tag `{tag-name}` is added.
 
 Any `/` in the auto tags are replaced with `-`.
 
@@ -92,7 +93,7 @@ For example if the environment variables are as follows:
 |INPUT_SERVER||
 |INPUT_REPOSITORY|myorg/myimage|
 |INPUT_TAGS|foo,bar|
-|INPUT_AUTO_TAG|true|
+|INPUT_TAG_WITH_REF|true|
 |GITHUB_REF|refs/tags/v0.1|
 
 Then the image will be tagged with:
@@ -109,7 +110,8 @@ If the variables are as follows:
 |INPUT_SERVER|myserver|
 |INPUT_REPOSITORY|myorg/myimage|
 |INPUT_TAGS|foo,bar|
-|INPUT_AUTO_TAG|true|
+|INPUT_TAG_WITH_REF|true|
+|INPUT_TAG_WITH_SHA|true|
 |GITHUB_REF|refs/heads/master|
 |GITHUB_SHA|c6df8c68eb71799f9c9ab4a4a4650d6aabd7e415|
 

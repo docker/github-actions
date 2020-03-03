@@ -3,11 +3,18 @@ package options
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
-func autoTag() bool {
-	return os.Getenv("INPUT_AUTO_TAG") == "true"
+func tagWithRef() bool {
+	b, err := strconv.ParseBool(os.Getenv("INPUT_TAG_WITH_REF"))
+	return err == nil && b
+}
+
+func tagWithSha() bool {
+	b, err := strconv.ParseBool(os.Getenv("INPUT_TAG_WITH_SHA"))
+	return err == nil && b
 }
 
 func dockerRepo(github GitHub) string {
@@ -25,7 +32,7 @@ func staticTags() []string {
 }
 
 func toFullTag(server, repo, tag string) string {
-	tag = strings.Trim(tag, " ")
+	tag = strings.TrimSpace(tag)
 	tag = strings.ReplaceAll(tag, "/", "-")
 	if server != "" {
 		return fmt.Sprintf("%s/%s:%s", server, repo, tag)
@@ -40,21 +47,23 @@ func GetTags(server string, github GitHub) []string {
 	for _, t := range staticTags() {
 		tags = append(tags, toFullTag(server, repo, t))
 	}
-	if autoTag() {
+	if tagWithRef() {
 		switch github.Reference.Type {
 		case GitRefHead:
 			if github.Reference.Name == "master" {
 				tags = append(tags, toFullTag(server, repo, "latest"))
 			} else {
-				tags = append(tags, toFullTag(server, repo, github.Reference.Name))
+				tags = appendGitRefTag(tags, server, repo, github.Reference.Name)
 			}
-			tags = appendShortGitShaTag(tags, github, server, repo)
 		case GitRefPullRequest:
-			tags = append(tags, toFullTag(server, repo, fmt.Sprintf("pr-%s", github.Reference.Name)))
-			tags = appendShortGitShaTag(tags, github, server, repo)
+			tags = appendGitRefTag(tags, server, repo, fmt.Sprintf("pr-%s", github.Reference.Name))
+
 		case GitRefTag:
-			tags = append(tags, toFullTag(server, repo, github.Reference.Name))
+			tags = appendGitRefTag(tags, server, repo, github.Reference.Name)
 		}
+	}
+	if tagWithSha() {
+		tags = appendShortGitShaTag(tags, github, server, repo)
 	}
 	return tags
 }
@@ -65,4 +74,9 @@ func appendShortGitShaTag(tags []string, github GitHub, server, repo string) []s
 		return append(tags, toFullTag(server, repo, tag))
 	}
 	return tags
+}
+
+func appendGitRefTag(tags []string, server, repo, refName string) []string {
+	t := strings.ReplaceAll(refName, "/", "-")
+	return append(tags, toFullTag(server, repo, t))
 }

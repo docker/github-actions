@@ -13,43 +13,41 @@ func TestGetBuildOptions(t *testing.T) {
 	_ = os.Setenv("INPUT_REPOSITORY", "repository")
 	_ = os.Setenv("INPUT_BUILD_ARGS", "buildarg1=b1,buildarg2=b2")
 	_ = os.Setenv("INPUT_LABELS", "label1=l1,label2=l2")
-	_ = os.Setenv("INPUT_AUTO_TAG", "false")
-	_ = os.Setenv("INPUT_SET_DEFAULT_LABELS", "false")
+	_ = os.Setenv("INPUT_ADD_GIT_LABELS", "false")
 	_ = os.Setenv("INPUT_TARGET", "target")
 	_ = os.Setenv("INPUT_ALWAYS_PULL", "true")
-	_ = os.Setenv("INPUT_TAGS", "tag1,tag2")
 
 	o, err := GetBuildOptions()
 
 	assert.NilError(t, err)
 	assert.DeepEqual(t, Build{
-		Path:             "path",
-		Dockerfile:       "dockerfile",
-		SetDefaultLabels: false,
-		Target:           "target",
-		AlwaysPull:       true,
-		BuildArgs:        []string{"buildarg1=b1", "buildarg2=b2"},
-		Labels:           []string{"label1=l1", "label2=l2"},
+		Path:         "path",
+		Dockerfile:   "dockerfile",
+		AddGitLabels: false,
+		Target:       "target",
+		AlwaysPull:   true,
+		BuildArgs:    []string{"buildarg1=b1", "buildarg2=b2"},
+		Labels:       []string{"label1=l1", "label2=l2"},
 	}, o)
 }
 
 func TestGetLabels(t *testing.T) {
 	testCases := []struct {
-		name       string
-		setDefault bool
-		labels     []string
-		github     GitHub
-		expected   []string
+		name         string
+		addGitLabels bool
+		labels       []string
+		github       GitHub
+		expected     []string
 	}{
 		{
-			name:     "no-defaults",
+			name:     "no-git-labels",
 			labels:   []string{"label1", "label2"},
 			expected: []string{"label1", "label2"},
 		},
 		{
-			name:       "with-defaults",
-			labels:     []string{"label1", "label2"},
-			setDefault: true,
+			name:         "with-git-labels",
+			labels:       []string{"label1", "label2"},
+			addGitLabels: true,
 			github: GitHub{
 				Actor: "actor",
 				Sha:   "sha",
@@ -68,8 +66,8 @@ func TestGetLabels(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			labels := GetLabels(
 				Build{
-					SetDefaultLabels: tc.setDefault,
-					Labels:           tc.labels,
+					AddGitLabels: tc.addGitLabels,
+					Labels:       tc.labels,
 				},
 				tc.github,
 			)

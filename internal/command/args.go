@@ -41,12 +41,7 @@ func BuildArgs(o options.Build, github options.GitHub, tags []string) []string {
 		args = append(args, "--build-arg", buildArg)
 	}
 
-	if o.Path == "" {
-		args = append(args, ".")
-	} else {
-		args = append(args, o.Path)
-	}
-	return args
+	return append(args, o.Path)
 }
 
 // PushArgs converts tags into the cli arguments used to call `docker push`

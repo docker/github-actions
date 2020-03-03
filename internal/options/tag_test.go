@@ -10,16 +10,17 @@ import (
 
 func TestGetTags(t *testing.T) {
 	testCases := []struct {
-		name     string
-		autoTag  bool
-		tags     string
-		ref      GitReference
-		server   string
-		expected []string
-		sha      string
+		name       string
+		tagWithRef bool
+		tagWithSha bool
+		tags       string
+		ref        GitReference
+		server     string
+		expected   []string
+		sha        string
 	}{
 		{
-			name:     "no-auto",
+			name:     "no-standard-tags",
 			tags:     "tag1,tag2",
 			expected: []string{"my/repo:tag1", "my/repo:tag2"},
 			ref:      GitReference{GitRefHead, "master"},
@@ -32,63 +33,62 @@ func TestGetTags(t *testing.T) {
 			ref:      GitReference{GitRefHead, "master"},
 		},
 		{
-			name:     "unknown-ref-type",
-			tags:     "tag1,tag2",
-			expected: []string{"my/repo:tag1", "my/repo:tag2"},
-			autoTag:  true,
-			ref:      GitReference{GitRefUnknown, "master"},
+			name:       "unknown-ref-type",
+			tags:       "tag1,tag2",
+			expected:   []string{"my/repo:tag1", "my/repo:tag2"},
+			tagWithRef: true,
+			ref:        GitReference{GitRefUnknown, "master"},
 		},
 		{
-			name:     "master-branch",
-			autoTag:  true,
-			tags:     "tag1,tag2",
-			expected: []string{"my/repo:tag1", "my/repo:tag2", "my/repo:latest"},
-			ref:      GitReference{GitRefHead, "master"},
+			name:       "master-branch",
+			tagWithRef: true,
+			tags:       "tag1,tag2",
+			expected:   []string{"my/repo:tag1", "my/repo:tag2", "my/repo:latest"},
+			ref:        GitReference{GitRefHead, "master"},
 		},
 		{
-			name:     "different-branch",
-			autoTag:  true,
-			tags:     "tag1,tag2",
-			expected: []string{"my/repo:tag1", "my/repo:tag2", "my/repo:branch-name"},
-			ref:      GitReference{GitRefHead, "branch-name"},
+			name:       "different-branch",
+			tagWithRef: true,
+			tags:       "tag1,tag2",
+			expected:   []string{"my/repo:tag1", "my/repo:tag2", "my/repo:branch-name"},
+			ref:        GitReference{GitRefHead, "branch-name"},
 		},
 		{
-			name:     "pull-request",
-			autoTag:  true,
-			tags:     "tag1,tag2",
-			expected: []string{"my/repo:tag1", "my/repo:tag2", "my/repo:pr-name"},
-			ref:      GitReference{GitRefPullRequest, "name"},
+			name:       "pull-request",
+			tagWithRef: true,
+			tags:       "tag1,tag2",
+			expected:   []string{"my/repo:tag1", "my/repo:tag2", "my/repo:pr-name"},
+			ref:        GitReference{GitRefPullRequest, "name"},
 		},
 		{
-			name:     "tag",
-			autoTag:  true,
-			tags:     "tag1,tag2",
-			expected: []string{"my/repo:tag1", "my/repo:tag2", "my/repo:v1.0"},
-			ref:      GitReference{GitRefTag, "v1.0"},
+			name:       "tag",
+			tagWithRef: true,
+			tags:       "tag1,tag2",
+			expected:   []string{"my/repo:tag1", "my/repo:tag2", "my/repo:v1.0"},
+			ref:        GitReference{GitRefTag, "v1.0"},
 		},
 		{
-			name:     "master-branch-with-sha",
-			autoTag:  true,
-			tags:     "tag1,tag2",
-			expected: []string{"my/repo:tag1", "my/repo:tag2", "my/repo:latest", "my/repo:sha-1234567"},
-			ref:      GitReference{GitRefHead, "master"},
-			sha:      "1234567890",
+			name:       "master-branch-with-sha",
+			tagWithRef: true,
+			tags:       "tag1,tag2",
+			expected:   []string{"my/repo:tag1", "my/repo:tag2", "my/repo:latest"},
+			ref:        GitReference{GitRefHead, "master"},
+			sha:        "1234567890",
 		},
 		{
-			name:     "pull-request-with-sha",
-			autoTag:  true,
-			tags:     "tag1,tag2",
-			expected: []string{"my/repo:tag1", "my/repo:tag2", "my/repo:pr-name", "my/repo:sha-1234567"},
-			ref:      GitReference{GitRefPullRequest, "name"},
-			sha:      "1234567890",
+			name:       "pull-request-with-sha",
+			tagWithRef: true,
+			tags:       "tag1,tag2",
+			expected:   []string{"my/repo:tag1", "my/repo:tag2", "my/repo:pr-name"},
+			ref:        GitReference{GitRefPullRequest, "name"},
+			sha:        "1234567890",
 		},
 		{
-			name:     "tag-with-sha",
-			autoTag:  true,
-			tags:     "tag1,tag2",
-			expected: []string{"my/repo:tag1", "my/repo:tag2", "my/repo:v1.0"},
-			ref:      GitReference{GitRefTag, "v1.0"},
-			sha:      "1234567890",
+			name:       "tag-with-sha",
+			tagWithSha: true,
+			tags:       "tag1,tag2",
+			expected:   []string{"my/repo:tag1", "my/repo:tag2", "my/repo:sha-1234567"},
+			sha:        "1234567890",
 		},
 	}
 
@@ -97,10 +97,12 @@ func TestGetTags(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			defer os.Unsetenv("INPUT_TAGS")
 			defer os.Unsetenv("INPUT_REPOSITORY")
-			defer os.Unsetenv("INPUT_AUTO_TAG")
+			defer os.Unsetenv("INPUT_TAG_WITH_REF")
+			defer os.Unsetenv("INPUT_TAG_WITH_SHA")
 			_ = os.Setenv("INPUT_TAGS", tc.tags)
 			_ = os.Setenv("INPUT_REPOSITORY", "my/repo")
-			_ = os.Setenv("INPUT_AUTO_TAG", fmt.Sprint(tc.autoTag))
+			_ = os.Setenv("INPUT_TAG_WITH_REF", fmt.Sprint(tc.tagWithRef))
+			_ = os.Setenv("INPUT_TAG_WITH_SHA", fmt.Sprint(tc.tagWithSha))
 
 			tags := GetTags(
 				tc.server,

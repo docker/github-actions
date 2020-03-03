@@ -32,35 +32,34 @@ func TestBuildArgs(t *testing.T) {
 	}{
 		{
 			name:     "basic",
-			expected: []string{"build", "."},
-		},
-		{
-			name:     "with-path",
 			build:    options.Build{Path: "path"},
 			expected: []string{"build", "path"},
 		},
 		{
 			name:     "with-dockerfile",
-			build:    options.Build{Dockerfile: "dockerfile"},
+			build:    options.Build{Path: ".", Dockerfile: "dockerfile"},
 			expected: []string{"build", "--file", "dockerfile", "."},
 		},
 		{
 			name:     "with-tags",
+			build:    options.Build{Path: "."},
 			tags:     []string{"tag1", "tag2"},
 			expected: []string{"build", "-t", "tag1", "-t", "tag2", "."},
 		},
 		{
 			name: "with-static-labels",
 			build: options.Build{
+				Path:   ".",
 				Labels: []string{"label1", "label2"},
 			},
 			expected: []string{"build", "--label", "label1", "--label", "label2", "."},
 		},
 		{
-			name: "with-default-labels",
+			name: "with-git-labels",
 			build: options.Build{
-				SetDefaultLabels: true,
-				Labels:           []string{"label1"},
+				Path:         ".",
+				AddGitLabels: true,
+				Labels:       []string{"label1"},
 			},
 			github: options.GitHub{
 				Actor: "actor",
@@ -71,6 +70,7 @@ func TestBuildArgs(t *testing.T) {
 		{
 			name: "with-target",
 			build: options.Build{
+				Path:   ".",
 				Target: "target",
 			},
 			expected: []string{"build", "--target", "target", "."},
@@ -78,6 +78,7 @@ func TestBuildArgs(t *testing.T) {
 		{
 			name: "with-always-pull",
 			build: options.Build{
+				Path:       ".",
 				AlwaysPull: true,
 			},
 			expected: []string{"build", "--pull", "."},
@@ -85,6 +86,7 @@ func TestBuildArgs(t *testing.T) {
 		{
 			name: "with-build-args",
 			build: options.Build{
+				Path:      ".",
 				BuildArgs: []string{"build-arg-1", "build-arg-2"},
 			},
 			expected: []string{"build", "--build-arg", "build-arg-1", "--build-arg", "build-arg-2", "."},

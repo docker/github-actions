@@ -47,7 +47,7 @@ func TestBuild(t *testing.T) {
 		},
 		{
 			name:    "auto-tags-master",
-			envFile: "testdata/build_tests/auto_tags_master.env",
+			envFile: "testdata/build_tests/tag_master.env",
 			expectedTags: []string{
 				"localhost:5000/my-repository:auto-tags-master",
 				"localhost:5000/my-repository:latest",
@@ -55,7 +55,7 @@ func TestBuild(t *testing.T) {
 		},
 		{
 			name:    "auto-tags-branch",
-			envFile: "testdata/build_tests/auto_tags_branch.env",
+			envFile: "testdata/build_tests/tag_branch.env",
 			expectedTags: []string{
 				"localhost:5000/my-repository:auto-tags-branch",
 				"localhost:5000/my-repository:branch",
@@ -63,14 +63,14 @@ func TestBuild(t *testing.T) {
 		},
 		{
 			name:    "auto-tags-pr",
-			envFile: "testdata/build_tests/auto_tags_pr.env",
+			envFile: "testdata/build_tests/tag_pr.env",
 			expectedTags: []string{
 				"localhost:5000/my-repository:pr-pr1",
 			},
 		},
 		{
 			name:    "auto-tags-tag",
-			envFile: "testdata/build_tests/auto_tags_tag.env",
+			envFile: "testdata/build_tests/tag_tag.env",
 			expectedTags: []string{
 				"localhost:5000/my-repository:tag1",
 			},
