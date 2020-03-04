@@ -36,6 +36,14 @@ Builds and tags a docker image.
 
 See the tagging section for information on tag inputs
 
+##### Git labels
+
+When `INPUT_ADD_GIT_LABELS` is `true` labels are automatically added to the image that contain data about the current state of the git repo:
+
+|Label|Description|
+|---|---|
+|com.docker.github-actions-actor|The username of the user that kicked off this run of the actions (e.g. the user that did the git push)|
+|com.docker.github-actions-sha|The full git sha of this commit|
 
 ### push
 
