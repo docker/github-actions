@@ -17,7 +17,7 @@ Does a `docker login` using the supplied username and password. Will default to 
 |---|---|---|
 |INPUT_USERNAME|yes|Username to login with|
 |INPUT_PASSWORD|yes|Password to login with|
-|INPUT_SERVER|no|Server to login to. Defaults to Docker Hub|
+|INPUT_REGISTRY|no|Registry server to login to. Defaults to Docker Hub|
 
 ### build
 
@@ -75,13 +75,13 @@ There are 4 input variables used for tagging
 
 |Environment Variable|Required|Description|
 |---|---|---|
-|INPUT_SERVER|no|Server to tag with|
+|INPUT_REGISTRY|no|Registry server to tag with|
 |INPUT_REPOSITORY|yes|Repository to tag with|
 |INPUT_TAGS|no|Hard coded comma-delimited list of tags|
 |INPUT_TAG_WITH_REF|no|If true then `github-actions` will add tags depending on the git ref automatically as described below|
 |INPUT_TAG_WITH_SHA|no|If true then `github-actions` will add a tag in the form `sha-{git-short-sha}`|
 
-If `INPUT_SERVER` is set then all tags are prefixed with `{INPUT_SERVER}/{INPUT_REPOSITORY}:`.
+If `INPUT_REGISTRY` is set then all tags are prefixed with `{INPUT_REGISTRY}/{INPUT_REPOSITORY}:`.
 If not then all tags are prefixed with `{INPUT_REPOSITORY}:`
 
 Auto tags depend on the git reference that the run is associated with. The reference is passed to `github-actions` using the GitHub actions `GITHUB_REF` enviroment variable.
@@ -98,7 +98,7 @@ For example if the environment variables are as follows:
 
 |Variable|Value|
 |---|---|
-|INPUT_SERVER||
+|INPUT_REGISTRY||
 |INPUT_REPOSITORY|myorg/myimage|
 |INPUT_TAGS|foo,bar|
 |INPUT_TAG_WITH_REF|true|
@@ -115,7 +115,7 @@ If the variables are as follows:
 
 |Variable|Value|
 |---|---|
-|INPUT_SERVER|myserver|
+|INPUT_REGISTRY|myregistry|
 |INPUT_REPOSITORY|myorg/myimage|
 |INPUT_TAGS|foo,bar|
 |INPUT_TAG_WITH_REF|true|
@@ -125,10 +125,10 @@ If the variables are as follows:
 
 Then the image will be tagged with:
 ```
-myserver/myorg/myimage:foo
-myserver/myorg/myimage:bar
-myserver/myorg/myimage:lastest
-myserver/myorg/myimage:c6df8c6
+myregistry/myorg/myimage:foo
+myregistry/myorg/myimage:bar
+myregistry/myorg/myimage:lastest
+myregistry/myorg/myimage:c6df8c6
 ```
 
 ## Building github-actions

@@ -25,7 +25,7 @@ func main() {
 	rootCmd.AddCommand(
 		&cobra.Command{
 			Use:   "login",
-			Short: "Logs into a docker server",
+			Short: "Logs into a docker registry",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				return login(runner)
 			},

@@ -5,10 +5,10 @@ import (
 )
 
 // LoginArgs converts login options into the cli arguments used to call `docker login`
-func LoginArgs(o options.Login, server string) []string {
+func LoginArgs(o options.Login, registry string) []string {
 	args := []string{"login", "--username", o.Username, "--password", o.Password}
-	if server != "" {
-		args = append(args, server)
+	if registry != "" {
+		args = append(args, registry)
 	}
 	return args
 }

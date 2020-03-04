@@ -29,8 +29,8 @@ func (runner execRunner) Run(name string, args ...string) error {
 }
 
 // RunLogin runs a docker login
-func RunLogin(cmd Runner, opt options.Login, server string) error {
-	args := LoginArgs(opt, server)
+func RunLogin(cmd Runner, opt options.Login, registry string) error {
+	args := LoginArgs(opt, registry)
 	return cmd.Run("docker", args...)
 }
 

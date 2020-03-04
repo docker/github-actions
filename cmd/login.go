@@ -11,5 +11,5 @@ func login(cmd command.Runner) error {
 		return err
 	}
 
-	return command.RunLogin(cmd, o, options.GetServer())
+	return command.RunLogin(cmd, o, options.GetRegistry())
 }

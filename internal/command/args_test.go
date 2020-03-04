@@ -17,8 +17,8 @@ func TestLoginArgs(t *testing.T) {
 
 	assert.DeepEqual(t, expected, args)
 
-	args = LoginArgs(o, "server")
-	expected = append(expected, "server")
+	args = LoginArgs(o, "registry")
+	expected = append(expected, "registry")
 	assert.DeepEqual(t, expected, args)
 }
 

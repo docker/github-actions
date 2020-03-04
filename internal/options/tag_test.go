@@ -15,7 +15,7 @@ func TestGetTags(t *testing.T) {
 		tagWithSha bool
 		tags       string
 		ref        GitReference
-		server     string
+		registry   string
 		expected   []string
 		sha        string
 	}{
@@ -26,10 +26,10 @@ func TestGetTags(t *testing.T) {
 			ref:      GitReference{GitRefHead, "master"},
 		},
 		{
-			name:     "with-server",
+			name:     "with-registry",
 			tags:     "tag1,tag2",
-			expected: []string{"server/my/repo:tag1", "server/my/repo:tag2"},
-			server:   "server",
+			expected: []string{"registry/my/repo:tag1", "registry/my/repo:tag2"},
+			registry: "registry",
 			ref:      GitReference{GitRefHead, "master"},
 		},
 		{
@@ -105,7 +105,7 @@ func TestGetTags(t *testing.T) {
 			_ = os.Setenv("INPUT_TAG_WITH_SHA", fmt.Sprint(tc.tagWithSha))
 
 			tags := GetTags(
-				tc.server,
+				tc.registry,
 				GitHub{Reference: tc.ref, Sha: tc.sha},
 			)
 			assert.DeepEqual(t, tc.expected, tags)

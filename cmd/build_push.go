@@ -11,8 +11,8 @@ func buildPush(cmd command.Runner) error {
 		return err
 	}
 
-	server := options.GetServer()
-	tags := options.GetTags(server, github)
+	registry := options.GetRegistry()
+	tags := options.GetTags(registry, github)
 
 	build, err := options.GetBuildOptions()
 	if err != nil {
@@ -28,7 +28,7 @@ func buildPush(cmd command.Runner) error {
 			return err
 		}
 		if login.Username != "" && login.Password != "" {
-			if err := command.RunLogin(cmd, login, server); err != nil {
+			if err := command.RunLogin(cmd, login, registry); err != nil {
 				return err
 			}
 		}

@@ -31,52 +31,52 @@ func staticTags() []string {
 	return nil
 }
 
-func toFullTag(server, repo, tag string) string {
+func toFullTag(registry, repo, tag string) string {
 	tag = strings.TrimSpace(tag)
 	tag = strings.ReplaceAll(tag, "/", "-")
-	if server != "" {
-		return fmt.Sprintf("%s/%s:%s", server, repo, tag)
+	if registry != "" {
+		return fmt.Sprintf("%s/%s:%s", registry, repo, tag)
 	}
 	return fmt.Sprintf("%s:%s", repo, tag)
 }
 
-// GetTags gets a list of all tags for including automatic tags from github vars when enabled along with the server and repository
-func GetTags(server string, github GitHub) []string {
+// GetTags gets a list of all tags for including automatic tags from github vars when enabled along with the registry and repository
+func GetTags(registry string, github GitHub) []string {
 	repo := dockerRepo(github)
 	var tags []string
 	for _, t := range staticTags() {
-		tags = append(tags, toFullTag(server, repo, t))
+		tags = append(tags, toFullTag(registry, repo, t))
 	}
 	if tagWithRef() {
 		switch github.Reference.Type {
 		case GitRefHead:
 			if github.Reference.Name == "master" {
-				tags = append(tags, toFullTag(server, repo, "latest"))
+				tags = append(tags, toFullTag(registry, repo, "latest"))
 			} else {
-				tags = appendGitRefTag(tags, server, repo, github.Reference.Name)
+				tags = appendGitRefTag(tags, registry, repo, github.Reference.Name)
 			}
 		case GitRefPullRequest:
-			tags = appendGitRefTag(tags, server, repo, fmt.Sprintf("pr-%s", github.Reference.Name))
+			tags = appendGitRefTag(tags, registry, repo, fmt.Sprintf("pr-%s", github.Reference.Name))
 
 		case GitRefTag:
-			tags = appendGitRefTag(tags, server, repo, github.Reference.Name)
+			tags = appendGitRefTag(tags, registry, repo, github.Reference.Name)
 		}
 	}
 	if tagWithSha() {
-		tags = appendShortGitShaTag(tags, github, server, repo)
+		tags = appendShortGitShaTag(tags, github, registry, repo)
 	}
 	return tags
 }
 
-func appendShortGitShaTag(tags []string, github GitHub, server, repo string) []string {
+func appendShortGitShaTag(tags []string, github GitHub, registry, repo string) []string {
 	if len(github.Sha) >= 7 {
 		tag := fmt.Sprintf("sha-%s", github.Sha[0:7])
-		return append(tags, toFullTag(server, repo, tag))
+		return append(tags, toFullTag(registry, repo, tag))
 	}
 	return tags
 }
 
-func appendGitRefTag(tags []string, server, repo, refName string) []string {
+func appendGitRefTag(tags []string, registry, repo, refName string) []string {
 	t := strings.ReplaceAll(refName, "/", "-")
-	return append(tags, toFullTag(server, repo, t))
+	return append(tags, toFullTag(registry, repo, t))
 }
