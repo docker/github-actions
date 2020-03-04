@@ -3,9 +3,9 @@ package e2e
 import (
 	"bufio"
 	"encoding/json"
+	"fmt"
 	"os"
 	"os/exec"
-	"strings"
 )
 
 const (
@@ -13,13 +13,8 @@ const (
 	githubActionsImage    = "github-actions-e2e"
 )
 
-type envVar struct {
-	key   string
-	value string
-}
-
-func parseEnvFile(envFile string) ([]envVar, error) {
-	var vars []envVar
+func readEnvFile(envFile string) ([]string, error) {
+	var vars []string
 
 	file, err := os.Open(envFile)
 	if err != nil {
@@ -29,29 +24,12 @@ func parseEnvFile(envFile string) ([]envVar, error) {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		split := strings.SplitN(scanner.Text(), "=", 2)
-		vars = append(vars, envVar{split[0], split[1]})
+		vars = append(vars, scanner.Text())
 	}
 
+	path := os.Getenv("PATH")
+	vars = append(vars, fmt.Sprintf("PATH=%s", path))
 	return vars, scanner.Err()
-}
-
-func setupEnvVars(vars []envVar) error {
-	for _, v := range vars {
-		if err := os.Setenv(v.key, v.value); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func removeEnvVars(vars []envVar) error {
-	for _, v := range vars {
-		if err := os.Unsetenv(v.key); err != nil {
-			return err
-		}
-	}
-	return nil
 }
 
 func setupLocalRegistry() error {
@@ -68,15 +46,10 @@ func removeLocalRegistry() error {
 }
 
 func runActionsCommand(command, envFile string) error {
-	vars, err := parseEnvFile(envFile)
+	vars, err := readEnvFile(envFile)
 	if err != nil {
 		return err
 	}
-
-	if err = setupEnvVars(vars); err != nil {
-		return err
-	}
-	defer removeEnvVars(vars)
 
 	bin, err := getActionsBinaryPath()
 	if err != nil {
@@ -84,6 +57,7 @@ func runActionsCommand(command, envFile string) error {
 	}
 
 	cmd := exec.Command(bin, command)
+	cmd.Env = vars
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
