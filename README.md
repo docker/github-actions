@@ -30,7 +30,7 @@ Builds and tags a docker image.
 |INPUT_PATH|yes|Path to build from|
 |INPUT_DOCKERFILE|no|Path to Dockerfile|
 |INPUT_ADD_GIT_LABELS|no|Adds git labels (see below)|
-|INPUT_TARGET|no|Target of chain Dockerfile to build|
+|INPUT_TARGET|no|Target build stage to build|
 |INPUT_BUILD_ARGS|no|Comma-delimited list of build-args|
 |INPUT_LABELS|no|Comma-delimited list of labels|
 
