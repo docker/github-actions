@@ -4,6 +4,7 @@ import (
 	"os/exec"
 	"testing"
 
+	"github.com/hashicorp/go-multierror"
 	"gotest.tools/v3/assert"
 )
 
@@ -95,10 +96,11 @@ func TestBuild(t *testing.T) {
 }
 
 func removeImages(tags []string) error {
+	var result error
 	for _, tag := range tags {
 		if err := exec.Command("docker", "rmi", "-f", tag).Run(); err != nil {
-			return err
+			result = multierror.Append(result, err)
 		}
 	}
-	return nil
+	return result
 }
