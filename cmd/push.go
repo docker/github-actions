@@ -10,6 +10,9 @@ func push(cmd command.Runner) error {
 	if err != nil {
 		return err
 	}
-	tags := options.GetTags(options.GetRegistry(), github)
+	tags, err := options.GetTags(options.GetRegistry(), github)
+	if err != nil {
+		return err
+	}
 	return command.RunPush(cmd, tags)
 }

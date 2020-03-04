@@ -104,10 +104,11 @@ func TestGetTags(t *testing.T) {
 			_ = os.Setenv("INPUT_TAG_WITH_REF", fmt.Sprint(tc.tagWithRef))
 			_ = os.Setenv("INPUT_TAG_WITH_SHA", fmt.Sprint(tc.tagWithSha))
 
-			tags := GetTags(
+			tags, err := GetTags(
 				tc.registry,
 				GitHub{Reference: tc.ref, Sha: tc.sha},
 			)
+			assert.NilError(t, err)
 			assert.DeepEqual(t, tc.expected, tags)
 		})
 	}
@@ -118,6 +119,7 @@ func TestGetTagsWithGitHubRepo(t *testing.T) {
 	_ = os.Setenv("INPUT_TAGS", "tag1")
 
 	github := GitHub{Repository: "My/Repo"}
-	tags := GetTags("", github)
+	tags, err := GetTags("", github)
+	assert.NilError(t, err)
 	assert.DeepEqual(t, []string{"my/repo:tag1"}, tags)
 }

@@ -12,7 +12,10 @@ func buildPush(cmd command.Runner) error {
 	}
 
 	registry := options.GetRegistry()
-	tags := options.GetTags(registry, github)
+	tags, err := options.GetTags(registry, github)
+	if err != nil {
+		return err
+	}
 
 	build, err := options.GetBuildOptions()
 	if err != nil {
@@ -22,7 +25,9 @@ func buildPush(cmd command.Runner) error {
 		return err
 	}
 
-	if options.ShouldPush() {
+	if shouldPush, err := options.ShouldPush(); err != nil {
+		return err
+	} else if shouldPush {
 		login, err := options.GetLoginOptions()
 		if err != nil {
 			return err

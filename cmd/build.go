@@ -16,7 +16,10 @@ func build(cmd command.Runner) error {
 		return err
 	}
 
-	tags := options.GetTags(options.GetRegistry(), github)
+	tags, err := options.GetTags(options.GetRegistry(), github)
+	if err != nil {
+		return err
+	}
 
 	return command.RunBuild(cmd, o, github, tags)
 }

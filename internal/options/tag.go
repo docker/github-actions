@@ -1,20 +1,31 @@
 package options
 
 import (
+	"errors"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 )
 
-func tagWithRef() bool {
-	b, err := strconv.ParseBool(os.Getenv("INPUT_TAG_WITH_REF"))
-	return err == nil && b
+var (
+	errTagWithRefParse = errors.New("tag_with_ref input must be a valid boolean value")
+	errTagWithShaParse = errors.New("tag_with_sha input must be a valid boolean value")
+)
+
+func tagWithRef() (bool, error) {
+	b, err := readBoolOption("INPUT_TAG_WITH_REF")
+	if err != nil {
+		return false, errTagWithRefParse
+	}
+	return b, nil
 }
 
-func tagWithSha() bool {
-	b, err := strconv.ParseBool(os.Getenv("INPUT_TAG_WITH_SHA"))
-	return err == nil && b
+func tagWithSha() (bool, error) {
+	b, err := readBoolOption("INPUT_TAG_WITH_SHA")
+	if err != nil {
+		return false, errTagWithShaParse
+	}
+	return b, nil
 }
 
 func dockerRepo(github GitHub) string {
@@ -41,13 +52,15 @@ func toFullTag(registry, repo, tag string) string {
 }
 
 // GetTags gets a list of all tags for including automatic tags from github vars when enabled along with the registry and repository
-func GetTags(registry string, github GitHub) []string {
+func GetTags(registry string, github GitHub) ([]string, error) {
 	repo := dockerRepo(github)
 	var tags []string
 	for _, t := range staticTags() {
 		tags = append(tags, toFullTag(registry, repo, t))
 	}
-	if tagWithRef() {
+	if withRef, err := tagWithRef(); err != nil {
+		return nil, err
+	} else if withRef {
 		switch github.Reference.Type {
 		case GitRefHead:
 			if github.Reference.Name == "master" {
@@ -62,10 +75,12 @@ func GetTags(registry string, github GitHub) []string {
 			tags = appendGitRefTag(tags, registry, repo, github.Reference.Name)
 		}
 	}
-	if tagWithSha() {
+	if withSha, err := tagWithSha(); err != nil {
+		return nil, err
+	} else if withSha {
 		tags = appendShortGitShaTag(tags, github, registry, repo)
 	}
-	return tags
+	return tags, nil
 }
 
 func appendShortGitShaTag(tags []string, github GitHub, registry, repo string) []string {
