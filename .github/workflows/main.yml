@@ -9,5 +9,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Print env
+      run: env
+
+    - name: Read event json
+      run: cat $GITHUB_EVENT_PATH
+
     - name: Build
-      run: make -f docker.Makefile
+      run: DOCKER_BUILDKIT=1 make -f docker.Makefile build
+
+    - name: E2E
+      run: DOCKER_BUILDKIT=1 make -f docker.Makefile test-e2e
