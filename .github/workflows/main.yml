@@ -1,5 +1,11 @@
 name: CI
-on: [push, pull_request]
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
 jobs:
   build:
     name: build
@@ -8,12 +14,6 @@ jobs:
 
     - name: Checkout
       uses: actions/checkout@v2
-
-    - name: Print env
-      run: env
-
-    - name: Read event json
-      run: cat $GITHUB_EVENT_PATH
 
     - name: Build
       run: DOCKER_BUILDKIT=1 make -f docker.Makefile build
