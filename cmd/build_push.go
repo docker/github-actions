@@ -28,7 +28,7 @@ func buildPush(cmd command.Runner) error {
 			return err
 		}
 		if login.Username != "" && login.Password != "" {
-			if err = command.RunLogin(cmd, login, server); err != nil {
+			if err := command.RunLogin(cmd, login, server); err != nil {
 				return err
 			}
 		}

@@ -28,7 +28,7 @@ func staticTags() []string {
 	if inputTags := os.Getenv("INPUT_TAGS"); inputTags != "" {
 		return strings.Split(inputTags, ",")
 	}
-	return []string{}
+	return nil
 }
 
 func toFullTag(server, repo, tag string) string {
@@ -40,10 +40,10 @@ func toFullTag(server, repo, tag string) string {
 	return fmt.Sprintf("%s:%s", repo, tag)
 }
 
-// GetTags gets a list of all tags for including automatic tags created from github vars when AutTag is true along with the server and repository
+// GetTags gets a list of all tags for including automatic tags from github vars when enabled along with the server and repository
 func GetTags(server string, github GitHub) []string {
 	repo := dockerRepo(github)
-	tags := []string{}
+	var tags []string
 	for _, t := range staticTags() {
 		tags = append(tags, toFullTag(server, repo, t))
 	}

@@ -21,13 +21,12 @@ func TestGetBuildOptions(t *testing.T) {
 
 	assert.NilError(t, err)
 	assert.DeepEqual(t, Build{
-		Path:         "path",
-		Dockerfile:   "dockerfile",
-		AddGitLabels: false,
-		Target:       "target",
-		AlwaysPull:   true,
-		BuildArgs:    []string{"buildarg1=b1", "buildarg2=b2"},
-		Labels:       []string{"label1=l1", "label2=l2"},
+		Path:       "path",
+		Dockerfile: "dockerfile",
+		Target:     "target",
+		AlwaysPull: true,
+		BuildArgs:  []string{"buildarg1=b1", "buildarg2=b2"},
+		Labels:     []string{"label1=l1", "label2=l2"},
 	}, o)
 }
 

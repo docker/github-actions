@@ -20,7 +20,7 @@ type envVar struct {
 }
 
 func parseEnvFile(envFile string) ([]envVar, error) {
-	vars := []envVar{}
+	var vars []envVar
 
 	wd, err := os.Getwd()
 	if err != nil {
