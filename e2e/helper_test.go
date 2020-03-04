@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"os"
 	"os/exec"
-	"path"
 	"strings"
 )
 
@@ -22,12 +21,7 @@ type envVar struct {
 func parseEnvFile(envFile string) ([]envVar, error) {
 	var vars []envVar
 
-	wd, err := os.Getwd()
-	if err != nil {
-		return vars, err
-	}
-
-	file, err := os.Open(path.Join(wd, envFile))
+	file, err := os.Open(envFile)
 	if err != nil {
 		return vars, err
 	}
@@ -100,12 +94,7 @@ func getActionsBinaryPath() (string, error) {
 		return path, nil
 	}
 
-	wd, err := os.Getwd()
-	if err != nil {
-		return "", err
-	}
-
-	return path.Join(wd, "../bin/github-actions"), nil
+	return "../bin/github-actions", nil
 }
 
 func inspectImage(image string) (inspectResult, error) {
