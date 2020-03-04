@@ -44,7 +44,6 @@ func staticTags() []string {
 
 func toFullTag(registry, repo, tag string) string {
 	tag = strings.TrimSpace(tag)
-	tag = strings.ReplaceAll(tag, "/", "-")
 	if registry != "" {
 		return fmt.Sprintf("%s/%s:%s", registry, repo, tag)
 	}
