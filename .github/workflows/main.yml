@@ -29,4 +29,4 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: docker/github-actions
         tag_with_ref: true
-        push: ${{ contains(github.ref, "ref/tags/") }}
+        push: ${{ contains(github.ref, 'ref/tags/') }}
