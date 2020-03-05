@@ -30,4 +30,4 @@ jobs:
         repository: docker/github-actions
         tag_with_ref: true
         build_args: MAKE_TARGET=build
-        push: ${{ contains(github.ref, 'ref/tags/') }}
+        push: ${{ startsWith(github.ref, 'refs/tags/') }}
