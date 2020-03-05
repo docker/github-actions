@@ -15,7 +15,7 @@ func LoginArgs(o options.Login, registry string) []string {
 
 // BuildArgs converts build options into the cli arguments used to call `docker build`
 func BuildArgs(o options.Build, github options.GitHub, tags []string) []string {
-	args := []string{"build"}
+	args := []string{"build", "--progress", "plain"}
 
 	for _, tag := range tags {
 		args = append(args, "-t", tag)

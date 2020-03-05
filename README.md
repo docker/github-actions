@@ -88,7 +88,7 @@ Auto tags depend on the git reference that the run is associated with. The refer
 
 If the reference is `refs/heads/{branch-name}` then the tag `{branch-name}` is added. For the master branch the `{branch-name}` is replaced with `latest`.
 
-If the reference is `refs/pull-requests/{pr}` then the tag `pr-{pr}` is added.
+If the reference is `refs/pull/{pr}` then the tag `pr-{pr}` is added.
 
 If the reference is `refs/tags/{tag-name}` then the tag `{tag-name}` is added.
 

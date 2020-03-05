@@ -1,5 +1,13 @@
 name: CI
-on: [push, pull_request]
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+  pull_request:
+
 jobs:
   build:
     name: build
@@ -9,14 +17,17 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Print env
-      run: env
+    - name: build and test code
+      run: DOCKER_BUILDKIT=1 make -f docker.Makefile all
 
-    - name: Read event json
-      run: cat $GITHUB_EVENT_PATH
-
-    - name: Build
-      run: DOCKER_BUILDKIT=1 make -f docker.Makefile build
-
-    - name: E2E
-      run: DOCKER_BUILDKIT=1 make -f docker.Makefile test-e2e
+    - name: build and push image
+      uses: ./
+      env:
+        DOCKER_BUILDKIT: 1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: docker/github-actions
+        tag_with_ref: true
+        build_args: MAKE_TARGET=build
+        push: ${{ startsWith(github.ref, 'refs/tags/') }}

@@ -33,18 +33,18 @@ func TestBuildArgs(t *testing.T) {
 		{
 			name:     "basic",
 			build:    options.Build{Path: "path"},
-			expected: []string{"build", "path"},
+			expected: []string{"build", "--progress", "plain", "path"},
 		},
 		{
 			name:     "with-dockerfile",
 			build:    options.Build{Path: ".", Dockerfile: "dockerfile"},
-			expected: []string{"build", "--file", "dockerfile", "."},
+			expected: []string{"build", "--progress", "plain", "--file", "dockerfile", "."},
 		},
 		{
 			name:     "with-tags",
 			build:    options.Build{Path: "."},
 			tags:     []string{"tag1", "tag2"},
-			expected: []string{"build", "-t", "tag1", "-t", "tag2", "."},
+			expected: []string{"build", "--progress", "plain", "-t", "tag1", "-t", "tag2", "."},
 		},
 		{
 			name: "with-static-labels",
@@ -52,7 +52,7 @@ func TestBuildArgs(t *testing.T) {
 				Path:   ".",
 				Labels: []string{"label1", "label2"},
 			},
-			expected: []string{"build", "--label", "label1", "--label", "label2", "."},
+			expected: []string{"build", "--progress", "plain", "--label", "label1", "--label", "label2", "."},
 		},
 		{
 			name: "with-git-labels",
@@ -65,7 +65,7 @@ func TestBuildArgs(t *testing.T) {
 				Actor: "actor",
 				Sha:   "sha",
 			},
-			expected: []string{"build", "--label", "label1", "--label", "com.docker.github-actions-actor=actor", "--label", "com.docker.github-actions-sha=sha", "."},
+			expected: []string{"build", "--progress", "plain", "--label", "label1", "--label", "com.docker.github-actions-actor=actor", "--label", "com.docker.github-actions-sha=sha", "."},
 		},
 		{
 			name: "with-target",
@@ -73,7 +73,7 @@ func TestBuildArgs(t *testing.T) {
 				Path:   ".",
 				Target: "target",
 			},
-			expected: []string{"build", "--target", "target", "."},
+			expected: []string{"build", "--progress", "plain", "--target", "target", "."},
 		},
 		{
 			name: "with-always-pull",
@@ -81,7 +81,7 @@ func TestBuildArgs(t *testing.T) {
 				Path:       ".",
 				AlwaysPull: true,
 			},
-			expected: []string{"build", "--pull", "."},
+			expected: []string{"build", "--progress", "plain", "--pull", "."},
 		},
 		{
 			name: "with-build-args",
@@ -89,7 +89,7 @@ func TestBuildArgs(t *testing.T) {
 				Path:      ".",
 				BuildArgs: []string{"build-arg-1", "build-arg-2"},
 			},
-			expected: []string{"build", "--build-arg", "build-arg-1", "--build-arg", "build-arg-2", "."},
+			expected: []string{"build", "--progress", "plain", "--build-arg", "build-arg-1", "--build-arg", "build-arg-2", "."},
 		},
 	}
 	for _, tc := range testCases {

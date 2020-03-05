@@ -5,17 +5,10 @@ import (
 	"os"
 
 	"github.com/docker/github-actions/internal/command"
-	"github.com/docker/github-actions/internal/options"
 	"github.com/spf13/cobra"
 )
 
 func main() {
-	_, err := options.GetGitHubOptions()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
 	runner := command.NewRunner()
 
 	rootCmd := &cobra.Command{
@@ -53,7 +46,7 @@ func main() {
 		},
 	)
 
-	if err = rootCmd.Execute(); err != nil {
+	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
