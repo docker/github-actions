@@ -31,21 +31,21 @@ func (runner execRunner) Run(name string, args ...string) error {
 
 // RunLogin runs a docker login
 func RunLogin(cmd Runner, opt options.Login, registry string) error {
-	fmt.Println("Log in to registry")
+	fmt.Printf("Log in to registry %s\n", registry)
 	args := LoginArgs(opt, registry)
 	return cmd.Run("docker", args...)
 }
 
 // RunBuild runs a docker build and tags the resulting image
 func RunBuild(cmd Runner, opt options.Build, github options.GitHub, tags []string) error {
-	fmt.Println("Building image")
+	fmt.Printf("Building image %s\n", tags)
 	args := BuildArgs(opt, github, tags)
 	return cmd.Run("docker", args...)
 }
 
 // RunPush runs a docker push for each tag
 func RunPush(cmd Runner, tags []string) error {
-	fmt.Println("Pushing image")
+	fmt.Printf("Pushing image %s\n", tags)
 	for _, tag := range tags {
 		args := PushArgs(tag)
 		if err := cmd.Run("docker", args...); err != nil {

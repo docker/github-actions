@@ -31,3 +31,4 @@ jobs:
         tag_with_ref: true
         build_args: MAKE_TARGET=build
         push: ${{ startsWith(github.ref, 'refs/tags/') }}
+        tags: foo
