@@ -4,7 +4,7 @@ DOCKER_BUILD = docker build --progress=plain
 ROOT_DIR = $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 ROOT_DIR := $(subst .\,,$(ROOT_DIR))
 
-all: build test-unit
+all: build test-e2e
 
 build:
 	$(DOCKER_BUILD) -t docker/github-actions-default --build-arg MAKE_TARGET=default .
