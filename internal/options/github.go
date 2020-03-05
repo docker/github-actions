@@ -30,7 +30,7 @@ func parseGitRef(ref string) GitReference {
 		switch split[1] {
 		case "heads":
 			return GitReference{GitRefHead, name}
-		case "pulls":
+		case "pull":
 			return GitReference{GitRefPullRequest, name}
 		case "tags":
 			return GitReference{GitRefTag, name}

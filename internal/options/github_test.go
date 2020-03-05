@@ -55,7 +55,7 @@ func TestParseGitRef(t *testing.T) {
 		},
 		{
 			name:         "pull-request",
-			ref:          "refs/pulls/pr1",
+			ref:          "refs/pull/pr1",
 			expectedType: GitRefPullRequest,
 			expectedName: "pr1",
 		},

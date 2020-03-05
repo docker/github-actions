@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/docker/github-actions/internal/command"
 	"github.com/docker/github-actions/internal/options"
 )
@@ -37,7 +39,11 @@ func buildPush(cmd command.Runner) error {
 				return err
 			}
 		}
+
+		return command.RunPush(cmd, tags)
+	} else {
+		fmt.Println("Skipping push")
 	}
 
-	return command.RunPush(cmd, tags)
+	return nil
 }
