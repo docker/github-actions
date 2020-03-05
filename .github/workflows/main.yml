@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - '*'
   pull_request:
 
 jobs:
@@ -15,8 +17,16 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Build
-      run: DOCKER_BUILDKIT=1 make -f docker.Makefile build
-
-    - name: E2E
+    - name: test
       run: DOCKER_BUILDKIT=1 make -f docker.Makefile test-e2e
+
+    - name: build
+      uses: ./
+      env:
+        DOCKER_BUILDKIT: 1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: docker/github-actions
+        tag_with_ref: true
+        push: ${{ contains(github.ref, "ref/tags/") }}
