@@ -41,9 +41,8 @@ func buildPush(cmd command.Runner) error {
 		}
 
 		return command.RunPush(cmd, tags)
-	} else {
-		fmt.Println("Skipping push")
 	}
 
+	fmt.Println("Skipping push")
 	return nil
 }
