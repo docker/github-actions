@@ -17,10 +17,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: test
-      run: DOCKER_BUILDKIT=1 make -f docker.Makefile test-e2e
+    - name: build and test code
+      run: DOCKER_BUILDKIT=1 make -f docker.Makefile all
 
-    - name: build
+    - name: build and push image
       uses: ./
       env:
         DOCKER_BUILDKIT: 1
@@ -29,4 +29,5 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: docker/github-actions
         tag_with_ref: true
+        build_args: MAKE_TARGET=build
         push: ${{ contains(github.ref, 'ref/tags/') }}
