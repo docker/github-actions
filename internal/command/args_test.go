@@ -26,7 +26,6 @@ func TestBuildArgs(t *testing.T) {
 	testCases := []struct {
 		name     string
 		build    options.Build
-		github   options.GitHub
 		tags     []string
 		expected []string
 	}{
@@ -53,19 +52,6 @@ func TestBuildArgs(t *testing.T) {
 				Labels: []string{"label1", "label2"},
 			},
 			expected: []string{"build", "--progress", "plain", "--label", "label1", "--label", "label2", "."},
-		},
-		{
-			name: "with-git-labels",
-			build: options.Build{
-				Path:         ".",
-				AddGitLabels: true,
-				Labels:       []string{"label1"},
-			},
-			github: options.GitHub{
-				Actor: "actor",
-				Sha:   "sha",
-			},
-			expected: []string{"build", "--progress", "plain", "--label", "label1", "--label", "com.docker.github-actions-actor=actor", "--label", "com.docker.github-actions-sha=sha", "."},
 		},
 		{
 			name: "with-target",
@@ -95,7 +81,7 @@ func TestBuildArgs(t *testing.T) {
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
-			args := BuildArgs(tc.build, tc.github, tc.tags)
+			args := BuildArgs(tc.build, options.GitHub{}, tc.tags)
 			assert.DeepEqual(t, tc.expected, args)
 		})
 	}

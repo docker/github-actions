@@ -38,12 +38,15 @@ See the tagging section for information on tag inputs
 
 ##### Git labels
 
-When `INPUT_ADD_GIT_LABELS` is `true` labels are automatically added to the image that contain data about the current state of the git repo:
+When `INPUT_ADD_GIT_LABELS` is `true` labels are automatically added to the image that contain data about the current state of the git repo based on the standards set out in https://github.com/opencontainers/image-spec/blob/master/annotations.md.
+
+3 labels are supported:
 
 |Label|Description|
 |---|---|
-|com.docker.github-actions-actor|The username of the user that kicked off this run of the actions (e.g. the user that did the git push)|
-|com.docker.github-actions-sha|The full git sha of this commit|
+|org.opencontainers.image.created|Date and time on which the image was built (string, date-time as defined by RFC 3339).|
+|org.opencontainers.image.source|URL to this repository. E.g. `https://github.com/myorg/myrepository`|
+|org.opencontainers.image.revision|The full git sha of this commit.|
 
 ### push
 

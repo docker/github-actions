@@ -45,7 +45,6 @@ type GitHub struct {
 	RunInActions bool   `env:"GITHUB_ACTIONS"`
 	Workflow     string `env:"GITHUB_WORKFLOW"`
 	Action       string `env:"GITHUB_ACTION"`
-	Actor        string `env:"GITHUB_ACTOR"`
 	Repository   string `env:"GITHUB_REPOSITORY"`
 	EventName    string `env:"GITHUB_EVENT_NAME"`
 	Sha          string `env:"GITHUB_SHA"`

@@ -3,6 +3,7 @@ package e2e
 import (
 	"os/exec"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/go-multierror"
 	"gotest.tools/v3/assert"
@@ -32,18 +33,6 @@ func TestBuild(t *testing.T) {
 			expectedLabels: map[string]string{
 				"a": "a1",
 				"b": "b1",
-			},
-		},
-		{
-			name:    "auto-labels",
-			envFile: "testdata/build_tests/auto_labels.env",
-			expectedTags: []string{
-				"localhost:5000/my-repository:auto-labels",
-			},
-			expectedLabels: map[string]string{
-				"a":                               "a1",
-				"com.docker.github-actions-actor": "actor",
-				"com.docker.github-actions-sha":   "sha",
 			},
 		},
 		{
@@ -93,6 +82,26 @@ func TestBuild(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestBuildWithGitLabels(t *testing.T) {
+	tags := []string{"localhost:5000/my-repository:auto-labels"}
+	err := runActionsCommand("build", "testdata/build_tests/auto_labels.env")
+	assert.NilError(t, err)
+	defer removeImages(tags)
+
+	inspect, err := inspectImage(tags[0])
+	assert.NilError(t, err)
+	assert.DeepEqual(t, tags, inspect.RepoTags)
+
+	assert.Equal(t, 4, len(inspect.Config.Labels))
+	assert.Equal(t, "a1", inspect.Config.Labels["a"])
+	assert.Equal(t, "https://github.com/git/repository", inspect.Config.Labels["org.opencontainers.image.source"])
+	assert.Equal(t, "sha", inspect.Config.Labels["org.opencontainers.image.revision"])
+
+	created, err := time.Parse(time.RFC3339, inspect.Config.Labels["org.opencontainers.image.created"])
+	assert.NilError(t, err)
+	assert.Assert(t, created.Before(time.Now()))
 }
 
 func removeImages(tags []string) error {

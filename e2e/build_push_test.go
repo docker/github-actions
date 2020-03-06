@@ -14,9 +14,7 @@ func TestBuildPush(t *testing.T) {
 		"localhost:5000/my-repository:build-push-test",
 	}
 	labels := map[string]string{
-		"a":                               "a1",
-		"com.docker.github-actions-actor": "actor",
-		"com.docker.github-actions-sha":   "sha",
+		"a": "a1",
 	}
 	err := removeImages(tags)
 	assert.NilError(t, err)

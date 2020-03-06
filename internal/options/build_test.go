@@ -2,7 +2,9 @@ package options
 
 import (
 	"os"
+	"strings"
 	"testing"
+	"time"
 
 	"gotest.tools/v3/assert"
 )
@@ -31,46 +33,31 @@ func TestGetBuildOptions(t *testing.T) {
 }
 
 func TestGetLabels(t *testing.T) {
-	testCases := []struct {
-		name         string
-		addGitLabels bool
-		labels       []string
-		github       GitHub
-		expected     []string
-	}{
-		{
-			name:     "no-git-labels",
-			labels:   []string{"label1", "label2"},
-			expected: []string{"label1", "label2"},
-		},
-		{
-			name:         "with-git-labels",
-			labels:       []string{"label1", "label2"},
-			addGitLabels: true,
-			github: GitHub{
-				Actor: "actor",
-				Sha:   "sha",
-			},
-			expected: []string{
-				"label1",
-				"label2",
-				"com.docker.github-actions-actor=actor",
-				"com.docker.github-actions-sha=sha",
-			},
-		},
-	}
+	expected := []string{"label1", "label2"}
+	labels := GetLabels(Build{Labels: expected}, GitHub{})
+	assert.DeepEqual(t, expected, labels)
+}
 
-	for _, tc := range testCases {
-		tc := tc
-		t.Run(tc.name, func(t *testing.T) {
-			labels := GetLabels(
-				Build{
-					AddGitLabels: tc.addGitLabels,
-					Labels:       tc.labels,
-				},
-				tc.github,
-			)
-			assert.DeepEqual(t, tc.expected, labels)
+func TestGetLabelsWithGit(t *testing.T) {
+	labels := GetLabels(
+		Build{
+			Labels:       []string{"label1", "label2"},
+			AddGitLabels: true,
+		},
+		GitHub{
+			Repository: "myrepository",
+			Sha:        "mysha",
 		})
-	}
+
+	assert.Equal(t, 5, len(labels))
+	assert.Equal(t, "label1", labels[0])
+	assert.Equal(t, "label2", labels[1])
+	assert.Equal(t, "org.opencontainers.image.source=https://github.com/myrepository", labels[2])
+	assert.Equal(t, "org.opencontainers.image.revision=mysha", labels[3])
+
+	timeLabel := strings.SplitN(labels[4], "=", 2)
+	assert.Equal(t, "org.opencontainers.image.created", timeLabel[0])
+	labelTime, err := time.Parse(time.RFC3339, timeLabel[1])
+	assert.NilError(t, err)
+	assert.Assert(t, time.Now().After(labelTime))
 }
