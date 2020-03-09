@@ -11,7 +11,6 @@ func TestGetGitHubOptions(t *testing.T) {
 	_ = os.Setenv("GITHUB_ACTIONS", "true")
 	_ = os.Setenv("GITHUB_WORKFLOW", "workflow")
 	_ = os.Setenv("GITHUB_ACTION", "action")
-	_ = os.Setenv("GITHUB_ACTOR", "actor")
 	_ = os.Setenv("GITHUB_REPOSITORY", "repository")
 	_ = os.Setenv("GITHUB_EVENT_NAME", "event-name")
 	_ = os.Setenv("GITHUB_SHA", "sha")
@@ -23,7 +22,6 @@ func TestGetGitHubOptions(t *testing.T) {
 		RunInActions: true,
 		Workflow:     "workflow",
 		Action:       "action",
-		Actor:        "actor",
 		Repository:   "repository",
 		EventName:    "event-name",
 		Sha:          "sha",

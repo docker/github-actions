@@ -1,14 +1,14 @@
 package options
 
 import (
-	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/caarlos0/env/v6"
 )
 
-const githubLabelPrefix = "com.docker.github-actions"
+const opencontainersLabelPrefix = "org.opencontainers.image"
 
 // Build contains the parsed build action environment variables
 type Build struct {
@@ -50,13 +50,17 @@ func GetLabels(build Build, github GitHub) []string {
 		return labels
 	}
 
-	if github.Actor != "" {
-		labels = append(labels, fmt.Sprintf("%s-actor=%s", githubLabelPrefix, github.Actor))
+	if github.Repository != "" {
+		labels = append(labels, opencontainersLabelPrefix+".source=https://github.com/"+github.Repository)
 	}
 
 	if github.Sha != "" {
-		labels = append(labels, fmt.Sprintf("%s-sha=%s", githubLabelPrefix, github.Sha))
+		labels = append(labels, opencontainersLabelPrefix+".revision="+github.Sha)
+
 	}
+
+	createdTime := time.Now().UTC().Format(time.RFC3339)
+	labels = append(labels, opencontainersLabelPrefix+".created="+createdTime)
 
 	return labels
 }
