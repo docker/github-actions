@@ -1,7 +1,6 @@
 package options
 
 import (
-	"fmt"
 	"os"
 	"strings"
 	"time"
@@ -52,14 +51,16 @@ func GetLabels(build Build, github GitHub) []string {
 	}
 
 	if github.Repository != "" {
-		labels = append(labels, fmt.Sprintf("%s.source=https://github.com/%s", opencontainersLabelPrefix, github.Repository))
+		labels = append(labels, opencontainersLabelPrefix+".source=https://github.com/"+github.Repository)
 	}
 
 	if github.Sha != "" {
-		labels = append(labels, fmt.Sprintf("%s.revision=%s", opencontainersLabelPrefix, github.Sha))
+		labels = append(labels, opencontainersLabelPrefix+".revision="+github.Sha)
+
 	}
 
-	labels = append(labels, fmt.Sprintf("%s.created=%s", opencontainersLabelPrefix, time.Now().UTC().Format(time.RFC3339)))
+	createdTime := time.Now().UTC().Format(time.RFC3339)
+	labels = append(labels, opencontainersLabelPrefix+".created="+createdTime)
 
 	return labels
 }
