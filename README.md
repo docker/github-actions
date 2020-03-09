@@ -131,7 +131,7 @@ Then the image will be tagged with:
 myregistry/myorg/myimage:foo
 myregistry/myorg/myimage:bar
 myregistry/myorg/myimage:lastest
-myregistry/myorg/myimage:c6df8c6
+myregistry/myorg/myimage:sha-c6df8c6
 ```
 
 ## Building github-actions
