@@ -18,6 +18,7 @@ func TestGetBuildOptions(t *testing.T) {
 	_ = os.Setenv("INPUT_ADD_GIT_LABELS", "false")
 	_ = os.Setenv("INPUT_TARGET", "target")
 	_ = os.Setenv("INPUT_ALWAYS_PULL", "true")
+	_ = os.Setenv("INPUT_PLATFORMS", "platform1")
 
 	o, err := GetBuildOptions()
 
@@ -29,6 +30,7 @@ func TestGetBuildOptions(t *testing.T) {
 		AlwaysPull: true,
 		BuildArgs:  []string{"buildarg1=b1", "buildarg2=b2"},
 		Labels:     []string{"label1=l1", "label2=l2"},
+		Platforms:  "platform1",
 	}, o)
 }
 

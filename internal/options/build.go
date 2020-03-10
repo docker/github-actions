@@ -19,6 +19,7 @@ type Build struct {
 	AlwaysPull   bool   `env:"INPUT_ALWAYS_PULL"`
 	BuildArgs    []string
 	Labels       []string
+	Platforms    string `env:"INPUT_PLATFORMS"`
 }
 
 // GetBuildOptions gets the login action environment variables
@@ -63,4 +64,9 @@ func GetLabels(build Build, github GitHub) []string {
 	labels = append(labels, opencontainersLabelPrefix+".created="+createdTime)
 
 	return labels
+}
+
+// UseBuildX returns true if need to use buildx
+func UseBuildX(build Build) bool {
+	return build.Platforms != ""
 }

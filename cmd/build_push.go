@@ -23,6 +23,11 @@ func buildPush(cmd command.Runner) error {
 	if err != nil {
 		return err
 	}
+
+	if options.UseBuildX(build) {
+		return buildPushWithBuildX(cmd, build, github, tags, registry)
+	}
+
 	if err = command.RunBuild(cmd, build, github, tags); err != nil {
 		return err
 	}
@@ -45,4 +50,25 @@ func buildPush(cmd command.Runner) error {
 
 	fmt.Println("Skipping push")
 	return nil
+}
+
+func buildPushWithBuildX(cmd command.Runner, build options.Build, github options.GitHub, tags []string, registry string) error {
+	shouldPush, err := options.ShouldPush()
+	if err != nil {
+		return err
+	}
+
+	if shouldPush {
+		login, err := options.GetLoginOptions()
+		if err != nil {
+			return err
+		}
+		if login.Username != "" && login.Password != "" {
+			if err := command.RunLogin(cmd, login, registry); err != nil {
+				return err
+			}
+		}
+	}
+
+	return command.RunBuildX(cmd, build, github, tags, shouldPush)
 }

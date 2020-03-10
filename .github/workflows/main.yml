@@ -29,6 +29,16 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: docker/github-actions
+        tag: testing
         tag_with_ref: true
         build_args: MAKE_TARGET=build
         push: ${{ startsWith(github.ref, 'refs/tags/') }}
+
+    - name: build and push multiarch
+      uses: ./e2e
+      with:
+        username: ${{ secrets.TEST_DOCKER_USERNAME }}
+        password: ${{ secrets.TEST_DOCKER_PASSWORD }}
+        repository: zappyshu/simple
+        tag_with_sha: true
+        platforms: linux/amd64,linux/arm64

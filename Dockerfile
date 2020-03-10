@@ -27,9 +27,16 @@ RUN apt-get install -y -q --no-install-recommends coreutils util-linux
 
 ENV CGO_ENABLED=0
 ENV GITHUB_ACTIONS_BINARY=/github-actions
+ENV DOCKER_BUILDKIT=1
+ENV DOCKER_CLI_EXPERIMENTAL=enabled
+
 WORKDIR /tests
 
 RUN curl -fL https://download.docker.com/linux/static/${CLI_CHANNEL}/x86_64/docker-${CLI_VERSION}.tgz | tar xzO docker/docker > /usr/bin/docker && chmod +x /usr/bin/docker
+
+RUN mkdir -p ~/.docker/cli-plugins && \
+    wget https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64 -O ~/.docker/cli-plugins/docker-buildx && \
+    chmod a+x ~/.docker/cli-plugins/docker-buildx
 
 COPY . .
 COPY --from=builder /src/bin/github-actions /github-actions
@@ -42,6 +49,13 @@ COPY --from=builder /src/bin/github-actions github-actions
 
 # The github-actions image that is used by published docker github actions
 FROM docker:${DND_VERSION}
+
+ENV DOCKER_BUILDKIT=1
+ENV DOCKER_CLI_EXPERIMENTAL=enabled
+
+RUN mkdir -p ~/.docker/cli-plugins && \
+    wget https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64 -O ~/.docker/cli-plugins/docker-buildx && \
+    chmod a+x ~/.docker/cli-plugins/docker-buildx
 
 COPY --from=builder /src/bin/github-actions /github-actions
 
