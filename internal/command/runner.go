@@ -58,6 +58,11 @@ func RunPush(cmd Runner, tags []string) error {
 
 // RunBuildX runs a docker build using buildx
 func RunBuildX(cmd Runner, opt options.Build, github options.GitHub, tags []string, push bool) error {
+	fmt.Println("Setting up QEMU")
+	if err := cmd.Run("docker", "run", "--privileged", "--rm", "docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64"); err != nil {
+		return err
+	}
+
 	fmt.Println("Creating buildx builder")
 	createArgs := BuildxCreateArgs()
 	if err := cmd.Run("/docker-buildx", createArgs...); err != nil {
