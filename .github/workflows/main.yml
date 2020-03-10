@@ -18,14 +18,16 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Install binfmt
+      run: docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
+
     - name: Buildx
       run: |
         wget https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64 -O ./docker-buildx
         chmod a+x ./docker-buildx
         docker login --username ${{ secrets.TEST_DOCKER_USERNAME }} --password ${{ secrets.TEST_DOCKER_PASSWORD }}
-        docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
         ./docker-buildx create --name github-actions --use
-        ./docker-buildx build -t zappyshu/simple:multiarch --push --file Dockerfile.multiarch --platform linux/amd64,linux/arm64 .
+        ./docker-buildx build -t zappyshu/simple:multiarch1 --push --file Dockerfile.multiarch --platform linux/amd64,linux/arm64 .
 
 
     # - name: build and test code
