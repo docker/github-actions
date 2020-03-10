@@ -53,9 +53,8 @@ FROM docker:${DND_VERSION}
 ENV DOCKER_BUILDKIT=1
 ENV DOCKER_CLI_EXPERIMENTAL=enabled
 
-RUN mkdir -p ~/.docker/cli-plugins && \
-    wget https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64 -O ~/.docker/cli-plugins/docker-buildx && \
-    chmod a+x ~/.docker/cli-plugins/docker-buildx
+RUN wget https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64 -O /docker-buildx && \
+    chmod a+x /docker-buildx
 
 COPY --from=builder /src/bin/github-actions /github-actions
 

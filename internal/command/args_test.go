@@ -89,7 +89,7 @@ func TestBuildArgs(t *testing.T) {
 
 func TestBuildxCreateArgs(t *testing.T) {
 	args := BuildxCreateArgs()
-	assert.DeepEqual(t, []string{"buildx", "create", "--name", "github-actions", "--use"}, args)
+	assert.DeepEqual(t, []string{"create", "--name", "github-actions", "--use"}, args)
 }
 
 func TestPushArgs(t *testing.T) {

@@ -57,12 +57,20 @@ func RunPush(cmd Runner, tags []string) error {
 
 // RunBuildX runs a docker build using buildx
 func RunBuildX(cmd Runner, opt options.Build, github options.GitHub, tags []string, push bool) error {
+	if err := cmd.Run("/docker-buildx"); err != nil {
+		return err
+	}
+	if err := cmd.Run("/docker-buildx", "create", "--help"); err != nil {
+		return err
+	}
+
 	fmt.Println("Creating buildx builder")
 	createArgs := BuildxCreateArgs()
-	if err := cmd.Run("docker", createArgs...); err != nil {
+	if err := cmd.Run("/docker-buildx", createArgs...); err != nil {
 		return err
 	}
 
 	buildArgs := BuildxBuildArgs(opt, github, tags, false)
-	return cmd.Run("docker", buildArgs...)
+	fmt.Println("Building with buildx")
+	return cmd.Run("/docker-buildx", buildArgs...)
 }

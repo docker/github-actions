@@ -26,13 +26,12 @@ func PushArgs(tag string) []string {
 
 // BuildxCreateArgs returns args to create and use a buildx builder
 func BuildxCreateArgs() []string {
-	return []string{"buildx", "create", "--name", "github-actions", "--use"}
+	return []string{"create", "--name", "github-actions", "--use"}
 }
 
 // BuildxBuildArgs converts build options into the cli arguments used to call `docker buildx build`
 func BuildxBuildArgs(o options.Build, github options.GitHub, tags []string, push bool) []string {
-	args := []string{"buildx"}
-	args = append(args, commonBuildArgs(o, github, tags)...)
+	args := commonBuildArgs(o, github, tags)
 	args = append(args, "--platform", o.Platforms)
 
 	if push {
