@@ -26,7 +26,7 @@ jobs:
         docker login --username ${{ secrets.TEST_DOCKER_USERNAME }} --password ${{ secrets.TEST_DOCKER_PASSWORD }}
         docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
         ./docker-buildx create --name github-actions --use
-        ./docker-buildx build -t zappyshu/simple:testing --push --file Dockerfile.multiarch --platform linux/amd64,linux/arm64 .
+        ./docker-buildx build -t zappyshu/simple:github --push --file Dockerfile.multiarch --platform linux/amd64,linux/arm64 .
 
 
     # - name: build and test code
