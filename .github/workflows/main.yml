@@ -42,4 +42,4 @@ jobs:
         repository: zappyshu/simple
         tag_with_sha: true
         platforms: linux/amd64,linux/arm64
-        path: ./e2e/testdata/built_tests/
+        path: ./e2e/testdata/build_tests/
