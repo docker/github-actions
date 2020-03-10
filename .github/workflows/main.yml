@@ -19,14 +19,13 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Buildx
-      run: docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
-    #   run: |
-    #     wget https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64 -O ./docker-buildx
-    #     chmod a+x ./docker-buildx
-    #     docker login --username ${{ secrets.TEST_DOCKER_USERNAME }} --password ${{ secrets.TEST_DOCKER_PASSWORD }}
-    #     docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
-    #     ./docker-buildx create --name github-actions --use
-    #     ./docker-buildx build -t zappyshu/simple:github --push --file Dockerfile.multiarch --platform linux/amd64,linux/arm64 .
+      run: |
+        wget https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64 -O ./docker-buildx
+        chmod a+x ./docker-buildx
+        docker login --username ${{ secrets.TEST_DOCKER_USERNAME }} --password ${{ secrets.TEST_DOCKER_PASSWORD }}
+        docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
+        ./docker-buildx create --name github-actions --use
+        ./docker-buildx build -t zappyshu/simple:multiarch --push --file Dockerfile.multiarch --platform linux/amd64,linux/arm64 .
 
 
     # - name: build and test code
@@ -45,12 +44,12 @@ jobs:
     #     build_args: MAKE_TARGET=build
     #     push: ${{ startsWith(github.ref, 'refs/tags/') }}
 
-    - name: build and push multiarch
-      uses: ./e2e
-      with:
-        username: ${{ secrets.TEST_DOCKER_USERNAME }}
-        password: ${{ secrets.TEST_DOCKER_PASSWORD }}
-        repository: zappyshu/simple
-        tag_with_sha: true
-        platforms: linux/amd64,linux/arm64
-        dockerfile: Dockerfile.multiarch
+    # - name: build and push multiarch
+    #   uses: ./e2e
+    #   with:
+    #     username: ${{ secrets.TEST_DOCKER_USERNAME }}
+    #     password: ${{ secrets.TEST_DOCKER_PASSWORD }}
+    #     repository: zappyshu/simple
+    #     tag_with_sha: true
+    #     platforms: linux/amd64,linux/arm64
+    #     dockerfile: Dockerfile.multiarch
