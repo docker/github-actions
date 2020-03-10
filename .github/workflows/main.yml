@@ -21,11 +21,11 @@ jobs:
 
     - name: Buildx
       run: |
-        wget https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64 -O /docker-buildx
-        chmod a+x /docker-buildx
+        wget https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64 -O ./docker-buildx
+        chmod a+x ./docker-buildx
         docker login --username ${{ secrets.TEST_DOCKER_USERNAME }} --password ${{ secrets.TEST_DOCKER_PASSWORD }}
-        /docker-buildx create --name github-actions --use
-        /docker-buildx build -t zappyshu/simple:github --push --file Dockerfile.multiarch --platform linux/amd64,linux/arm64 .
+        ./docker-buildx create --name github-actions --use
+        ./docker-buildx build -t zappyshu/simple:github --push --file Dockerfile.multiarch --platform linux/amd64,linux/arm64 .
 
 
     # - name: build and test code
