@@ -23,6 +23,7 @@ func NewRunner() Runner {
 
 // Run executes the given command with arguments using exec.Command
 func (runner execRunner) Run(name string, args ...string) error {
+	fmt.Println("Running", name, args)
 	cmd := exec.Command(name, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
