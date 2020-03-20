@@ -8,12 +8,22 @@ import (
 )
 
 func buildPush(cmd command.Runner) error {
+	registry := options.GetRegistry()
+	login, err := options.GetLoginOptions()
+	if err != nil {
+		return err
+	}
+	if login.Username != "" && login.Password != "" {
+		if err := command.RunLogin(cmd, login, registry); err != nil {
+			return err
+		}
+	}
+
 	github, err := options.GetGitHubOptions()
 	if err != nil {
 		return err
 	}
 
-	registry := options.GetRegistry()
 	tags, err := options.GetTags(registry, github)
 	if err != nil {
 		return err
@@ -30,16 +40,6 @@ func buildPush(cmd command.Runner) error {
 	if shouldPush, err := options.ShouldPush(); err != nil {
 		return err
 	} else if shouldPush {
-		login, err := options.GetLoginOptions()
-		if err != nil {
-			return err
-		}
-		if login.Username != "" && login.Password != "" {
-			if err := command.RunLogin(cmd, login, registry); err != nil {
-				return err
-			}
-		}
-
 		return command.RunPush(cmd, tags)
 	}
 
