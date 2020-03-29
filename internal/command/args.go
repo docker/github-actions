@@ -29,6 +29,10 @@ func BuildArgs(o options.Build, github options.GitHub, tags []string) []string {
 		args = append(args, "--file", o.Dockerfile)
 	}
 
+	if o.CacheFrom != "" {
+		args = append(args, "--cache-from", o.CacheFrom)
+	}
+
 	if o.Target != "" {
 		args = append(args, "--target", o.Target)
 	}

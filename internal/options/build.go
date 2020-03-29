@@ -17,6 +17,7 @@ type Build struct {
 	AddGitLabels bool   `env:"INPUT_ADD_GIT_LABELS"`
 	Target       string `env:"INPUT_TARGET"`
 	AlwaysPull   bool   `env:"INPUT_ALWAYS_PULL"`
+	CacheFrom    string `env:"INPUT_CACHE_FROM"`
 	BuildArgs    []string
 	Labels       []string
 }
