@@ -80,10 +80,10 @@ func TestBuildArgs(t *testing.T) {
 		{
 			name: "with-cache-from",
 			build: options.Build{
-				Path:      ".",
-				CacheFrom: "foo/bar",
+				Path:       ".",
+				CacheFroms: []string{"foo/bar-1", "foo/bar-2"},
 			},
-			expected: []string{"build", "--progress", "plain", "--cache-from", "foo/bar", "."},
+			expected: []string{"build", "--progress", "plain", "--cache-from", "foo/bar-1", "--cache-from", "foo/bar-2", "."},
 		},
 	}
 	for _, tc := range testCases {

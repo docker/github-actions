@@ -17,7 +17,7 @@ type Build struct {
 	AddGitLabels bool   `env:"INPUT_ADD_GIT_LABELS"`
 	Target       string `env:"INPUT_TARGET"`
 	AlwaysPull   bool   `env:"INPUT_ALWAYS_PULL"`
-	CacheFrom    string `env:"INPUT_CACHE_FROM"`
+	CacheFroms   []string
 	BuildArgs    []string
 	Labels       []string
 }
@@ -27,6 +27,10 @@ func GetBuildOptions() (Build, error) {
 	var build Build
 	if err := env.Parse(&build); err != nil {
 		return build, err
+	}
+
+	if cacheFroms := os.Getenv("INPUT_CACHE_FROMS"); cacheFroms != "" {
+		build.CacheFroms = strings.Split(cacheFroms, ",")
 	}
 
 	if buildArgs := os.Getenv("INPUT_BUILD_ARGS"); buildArgs != "" {
