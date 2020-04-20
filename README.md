@@ -35,6 +35,7 @@ Builds and tags a docker image.
 |INPUT_TARGET|no|Target build stage to build|
 |INPUT_BUILD_ARGS|no|Comma-delimited list of build-args|
 |INPUT_LABELS|no|Comma-delimited list of labels|
+|INPUT_CACHE_FROMS|no|Comma-delimited list of cache-froms|
 
 See the tagging section for information on tag inputs
 
