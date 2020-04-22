@@ -37,6 +37,10 @@ func BuildArgs(o options.Build, github options.GitHub, tags []string) []string {
 		args = append(args, "--pull")
 	}
 
+	for _, cacheFrom := range o.CacheFroms {
+		args = append(args, "--cache-from", cacheFrom)
+	}
+
 	for _, buildArg := range o.BuildArgs {
 		args = append(args, "--build-arg", buildArg)
 	}
