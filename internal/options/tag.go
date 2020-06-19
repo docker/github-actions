@@ -8,8 +8,9 @@ import (
 )
 
 var (
-	errTagWithRefParse = errors.New("tag_with_ref input must be a valid boolean value")
-	errTagWithShaParse = errors.New("tag_with_sha input must be a valid boolean value")
+	errTagWithRefParse    = errors.New("tag_with_ref input must be a valid boolean value")
+	errTagWithShaParse    = errors.New("tag_with_sha input must be a valid boolean value")
+	errTagWithLatestParse = errors.New("tag_with_latest input must be a valid boolean value")
 )
 
 func tagWithRef() (bool, error) {
@@ -26,6 +27,21 @@ func tagWithSha() (bool, error) {
 		return false, errTagWithShaParse
 	}
 	return b, nil
+}
+
+func tagWithLatest() (OptionalBool, error) {
+	var key = "INPUT_TAG_WITH_LATEST"
+	if _, present := os.LookupEnv(key); !present {
+		return notPresent, nil
+	}
+	b, err := readBoolOption(key)
+	if err != nil {
+		return notPresent, errTagWithLatestParse
+	}
+	if b {
+		return presentAndTrue, nil
+	}
+	return presentAndFalse, nil
 }
 
 func dockerRepo(github GitHub) string {
@@ -57,12 +73,18 @@ func GetTags(registry string, github GitHub) ([]string, error) {
 	for _, t := range staticTags() {
 		tags = append(tags, toFullTag(registry, repo, t))
 	}
+	withLatest, err := tagWithLatest()
+	if err != nil {
+		return nil, err
+	} else if withLatest == presentAndTrue {
+		tags = append(tags, toFullTag(registry, repo, "latest"))
+	}
 	if withRef, err := tagWithRef(); err != nil {
 		return nil, err
 	} else if withRef {
 		switch github.Reference.Type {
 		case GitRefHead:
-			if github.Reference.Name == "master" {
+			if withLatest == notPresent && github.Reference.Name == "master" {
 				tags = append(tags, toFullTag(registry, repo, "latest"))
 			} else {
 				tags = appendGitRefTag(tags, registry, repo, github.Reference.Name)

@@ -10,14 +10,15 @@ import (
 
 func TestGetTags(t *testing.T) {
 	testCases := []struct {
-		name       string
-		tagWithRef bool
-		tagWithSha bool
-		tags       string
-		ref        GitReference
-		registry   string
-		expected   []string
-		sha        string
+		name          string
+		tagWithRef    bool
+		tagWithSha    bool
+		tagWithLatest OptionalBool
+		tags          string
+		ref           GitReference
+		registry      string
+		expected      []string
+		sha           string
 	}{
 		{
 			name:     "no-standard-tags",
@@ -45,6 +46,36 @@ func TestGetTags(t *testing.T) {
 			tags:       "tag1,tag2",
 			expected:   []string{"my/repo:tag1", "my/repo:tag2", "my/repo:latest"},
 			ref:        GitReference{GitRefHead, "master"},
+		},
+		{
+			name:          "latest-true",
+			tags:          "tag1,tag2",
+			tagWithLatest: presentAndTrue,
+			expected:      []string{"my/repo:tag1", "my/repo:tag2", "my/repo:latest"},
+			ref:           GitReference{GitRefHead, "master"},
+		},
+		{
+			name:          "latest-false",
+			tags:          "tag1,tag2",
+			tagWithLatest: presentAndFalse,
+			expected:      []string{"my/repo:tag1", "my/repo:tag2"},
+			ref:           GitReference{GitRefHead, "master"},
+		},
+		{
+			name:          "master-branch-latest-true",
+			tagWithRef:    true,
+			tags:          "tag1,tag2",
+			tagWithLatest: presentAndTrue,
+			expected:      []string{"my/repo:tag1", "my/repo:tag2", "my/repo:latest", "my/repo:master"},
+			ref:           GitReference{GitRefHead, "master"},
+		},
+		{
+			name:          "master-branch-latest-false",
+			tagWithRef:    true,
+			tags:          "tag1,tag2",
+			tagWithLatest: presentAndFalse,
+			expected:      []string{"my/repo:tag1", "my/repo:tag2", "my/repo:master"},
+			ref:           GitReference{GitRefHead, "master"},
 		},
 		{
 			name:       "different-branch",
@@ -99,10 +130,18 @@ func TestGetTags(t *testing.T) {
 			defer os.Unsetenv("INPUT_REPOSITORY")
 			defer os.Unsetenv("INPUT_TAG_WITH_REF")
 			defer os.Unsetenv("INPUT_TAG_WITH_SHA")
+			defer os.Unsetenv("INPUT_TAG_WITH_LATEST")
 			_ = os.Setenv("INPUT_TAGS", tc.tags)
 			_ = os.Setenv("INPUT_REPOSITORY", "my/repo")
 			_ = os.Setenv("INPUT_TAG_WITH_REF", fmt.Sprint(tc.tagWithRef))
 			_ = os.Setenv("INPUT_TAG_WITH_SHA", fmt.Sprint(tc.tagWithSha))
+			if tc.tagWithLatest == presentAndTrue || tc.tagWithLatest == presentAndFalse {
+				if tc.tagWithLatest == presentAndTrue {
+					_ = os.Setenv("INPUT_TAG_WITH_LATEST", fmt.Sprint(true))
+				} else {
+					_ = os.Setenv("INPUT_TAG_WITH_LATEST", fmt.Sprint(false))
+				}
+			}
 
 			tags, err := GetTags(
 				tc.registry,
