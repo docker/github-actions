@@ -6,6 +6,8 @@ import (
 	"os/exec"
 
 	"github.com/docker/github-actions/internal/options"
+
+	backoff "github.com/cenkalti/backoff/v4"
 )
 
 // Runner executes standard commands
@@ -48,7 +50,10 @@ func RunPush(cmd Runner, tags []string) error {
 	fmt.Println("Pushing image", tags)
 	for _, tag := range tags {
 		args := PushArgs(tag)
-		if err := cmd.Run("docker", args...); err != nil {
+		pushBackoff := backoff.WithMaxRetries(backoff.NewExponentialBackOff(), options.MaxPushRetries())
+		if err := backoff.Retry(func() error {
+			return cmd.Run("docker", args...)
+		}, pushBackoff); err != nil {
 			return err
 		}
 	}

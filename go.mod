@@ -9,4 +9,5 @@ require (
 	github.com/spf13/cobra v0.0.6
 	gotest.tools/v3 v3.0.2
 	k8s.io/apimachinery v0.17.3
+	github.com/cenkalti/backoff/v4 v4.0.2
 )

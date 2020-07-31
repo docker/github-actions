@@ -71,6 +71,7 @@ Same as the login and build commands with the addition of
 |Environment Variable|Required|Description|
 |---|---|---|
 |INPUT_PUSH|no|Will push the image if true|
+|INPUT_MAX_PUSH_RETRIES|no|Number of times to retry image push operations with exponential backoff|
 
 
 ## Tagging

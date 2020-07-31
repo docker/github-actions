@@ -67,6 +67,16 @@ func TestBuildPush(t *testing.T) {
 			"b": "b1",
 		},
 	)
+
+	// Build and push with one retry
+	testBuildPush(
+		t,
+		"testdata/build_push_tests/build_push_retry.env",
+		baseTags,
+		map[string]string{
+			"c": "c1",
+		},
+	)
 }
 
 func assertBuildPushImages(t *testing.T, image string, expectedTags []string, expectedLabels map[string]string) {
