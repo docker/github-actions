@@ -17,6 +17,8 @@ func LoginArgs(o options.Login, registry string) []string {
 func BuildArgs(o options.Build, github options.GitHub, tags []string) []string {
 	args := []string{"build", "--progress", "plain"}
 
+	args = append(args, o.BuildOptions...)
+
 	for _, tag := range tags {
 		args = append(args, "-t", tag)
 	}

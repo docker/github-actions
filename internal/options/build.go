@@ -20,6 +20,7 @@ type Build struct {
 	CacheFroms   []string
 	BuildArgs    []string
 	Labels       []string
+	BuildOptions []string
 }
 
 // GetBuildOptions gets the login action environment variables
@@ -39,6 +40,10 @@ func GetBuildOptions() (Build, error) {
 
 	if labels := os.Getenv("INPUT_LABELS"); labels != "" {
 		build.Labels = strings.Split(labels, ",")
+	}
+
+	if buildOptions := os.Getenv("INPUT_BUILD_OPTIONS"); buildOptions != "" {
+		build.BuildOptions = strings.Split(buildOptions, " ")
 	}
 
 	return build, nil
