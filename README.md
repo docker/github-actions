@@ -133,7 +133,7 @@ Then the image will be tagged with:
 ```
 myregistry/myorg/myimage:foo
 myregistry/myorg/myimage:bar
-myregistry/myorg/myimage:lastest
+myregistry/myorg/myimage:latest
 myregistry/myorg/myimage:sha-c6df8c6
 ```
 
