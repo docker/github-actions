@@ -1,4 +1,14 @@
-# github-actions
+## Deprecated
+
+This repository is being replaced with [docker/build-push-action@v2](https://github.com/docker/build-push-action/)
+which includes significant changes and now uses Docker [Buildx](https://github.com/docker/buildx). It will not receive
+any future updates, please update your workflows.
+
+[Upgrade notes](https://github.com/docker/build-push-action/blob/master/UPGRADE.md) with many [usage examples](https://github.com/docker/build-push-action/#advanced-usage)
+have been added to handle most use cases.
+
+## About
+
 The core code base for Docker's GitHub Actions (https://github.com/features/actions). This code is used to build the docker/github-actions image that provides the functionality used by the published Docker GitHub Action:
 
 * [Build and push Docker images action](https://github.com/docker/build-push-action)
